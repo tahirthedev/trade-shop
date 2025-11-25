@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface FetchOptions extends RequestInit {
   token?: string;
@@ -19,7 +19,7 @@ async function apiFetch<T>(endpoint: string, options: FetchOptions = {}): Promis
     Object.assign(headers, fetchOptions.headers);
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  const response = await fetch(`${API_URL}/api${endpoint}`, {
     ...fetchOptions,
     headers,
   });
