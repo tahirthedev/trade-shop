@@ -1,0 +1,2663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Shop - Plataforma de Oficios Profesionales con IA</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f7fa;
+            color: #1a202c;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #2563eb;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background: #eff6ff;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Section */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a202c;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2563eb;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* AI Score Display */
+        .ai-score-card {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .ai-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .ai-score-value {
+            font-size: 4rem;
+            font-weight: 800;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .score-item {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .score-item-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+
+        .score-item-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Projects Section */
+        .projects-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .project-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            border-color: #2563eb;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .project-meta {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .project-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-new {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-completed {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .project-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .project-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-detail-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .project-detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            color: #1a202c;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* AI Assistant */
+        .ai-assistant {
+            background: linear-gradient(135deg, #f3e7ff 0%, #e0e7ff 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .ai-assistant-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-assistant-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6366f1;
+        }
+
+        .ai-chat-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .ai-message {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .ai-message.user {
+            background: #dbeafe;
+            margin-left: 2rem;
+        }
+
+        .ai-message.assistant {
+            background: #f3f4f6;
+            margin-right: 2rem;
+        }
+
+        .ai-input-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ai-input {
+            flex: 1;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .pricing-card.featured {
+            border-color: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #2563eb;
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .pricing-tier {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-period {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .file-upload-area:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .file-upload-area.dragging {
+            border-color: #2563eb;
+            background: #dbeafe;
+        }
+
+        .uploaded-image {
+            max-width: 100%;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Trade Types */
+        .trade-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .trade-tag {
+            padding: 0.5rem 1rem;
+            background: #e0e7ff;
+            color: #3730a3;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .trade-tag:hover {
+            background: #c7d2fe;
+        }
+
+        .trade-tag.selected {
+            background: #2563eb;
+            color: white;
+            border-color: #1d4ed8;
+        }
+
+        /* Marketplace Styles */
+        .marketplace-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .marketplace-header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            margin: -2rem -2rem 2rem -2rem;
+            border-radius: 0 0 2rem 2rem;
+        }
+
+        .marketplace-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .marketplace-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .professionals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .professional-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .professional-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            border-color: #2563eb;
+        }
+
+        .professional-header {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .professional-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+            border: 4px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .professional-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .professional-trade {
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .professional-badge-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .verified-badge {
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .top-rated-badge {
+            background: #f59e0b;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .professional-score {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .professional-body {
+            padding: 1.5rem;
+        }
+
+        .professional-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .professional-specialties {
+            margin-bottom: 1.5rem;
+        }
+
+        .specialties-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .specialties-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .specialty-tag {
+            padding: 0.25rem 0.75rem;
+            background: #e0e7ff;
+            color: #3730a3;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .professional-reviews {
+            border-top: 2px solid #f3f4f6;
+            padding-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .review-stars {
+            color: #f59e0b;
+            font-size: 0.875rem;
+        }
+
+        .review-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .professional-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Detailed Profile View */
+        .profile-detail-container {
+            max-width: 800px;
+        }
+
+        .profile-detail-header {
+            display: flex;
+            align-items: start;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .profile-detail-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border: 4px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .profile-detail-info {
+            flex: 1;
+        }
+
+        .profile-detail-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .profile-detail-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        .work-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .work-image {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .work-image:hover {
+            transform: scale(1.05);
+        }
+
+        .certifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .certification-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            border-left: 4px solid #10b981;
+        }
+
+        .certification-icon {
+            font-size: 2rem;
+        }
+
+        .certification-info {
+            flex: 1;
+        }
+
+        .certification-name {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .certification-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .score-breakdown-detail {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .score-breakdown-item {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        .score-breakdown-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-breakdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .score-breakdown-max {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .results-count {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Componente Principal de la App
+        function App() {
+            const [currentPage, setCurrentPage] = useState('home');
+            const [user, setUser] = useState(null);
+            const [showModal, setShowModal] = useState(false);
+            const [modalContent, setModalContent] = useState(null);
+
+            const navigate = (page) => {
+                setCurrentPage(page);
+                window.scrollTo(0, 0);
+            };
+
+            const openModal = (content) => {
+                setModalContent(content);
+                setShowModal(true);
+            };
+
+            const closeModal = () => {
+                setShowModal(false);
+                setModalContent(null);
+            };
+
+            const login = (userType) => {
+                // Simular inicio de sesión
+                setUser({
+                    type: userType,
+                    name: userType === 'tradesperson' ? 'Juan García' : 'María López',
+                    email: 'usuario@ejemplo.com',
+                    aiScore: userType === 'tradesperson' ? 847 : null,
+                    trade: userType === 'tradesperson' ? 'Electricista' : null,
+                    joined: '2024'
+                });
+                navigate('dashboard');
+            };
+
+            return (
+                <div className="app-container">
+                    <Navbar 
+                        currentPage={currentPage} 
+                        navigate={navigate} 
+                        user={user}
+                        setUser={setUser}
+                    />
+                    
+                    {currentPage === 'home' && <HomePage navigate={navigate} login={login} />}
+                    {currentPage === 'dashboard' && user && <Dashboard user={user} openModal={openModal} />}
+                    {currentPage === 'pricing' && <PricingPage navigate={navigate} />}
+                    {currentPage === 'features' && <FeaturesPage navigate={navigate} />}
+                    {currentPage === 'marketplace' && <MarketplacePage openModal={openModal} user={user} />}
+                    
+                    {showModal && (
+                        <Modal closeModal={closeModal}>
+                            {modalContent}
+                        </Modal>
+                    )}
+                </div>
+            );
+        }
+
+        // Componente de Navegación
+        function Navbar({ currentPage, navigate, user, setUser }) {
+            return (
+                <nav className="navbar">
+                    <div className="nav-content">
+                        <div className="logo" onClick={() => navigate('home')} style={{cursor: 'pointer'}}>
+                            🔧 Trade Shop
+                        </div>
+                        <div className="nav-links">
+                            <span className="nav-link" onClick={() => navigate('marketplace')}>
+                                Buscar Profesionales
+                            </span>
+                            <span className="nav-link" onClick={() => navigate('features')}>
+                                Características
+                            </span>
+                            <span className="nav-link" onClick={() => navigate('pricing')}>
+                                Precios
+                            </span>
+                            {user ? (
+                                <>
+                                    <span className="nav-link" onClick={() => navigate('dashboard')}>
+                                        Panel
+                                    </span>
+                                    <button className="btn btn-secondary" onClick={() => {
+                                        setUser(null);
+                                        navigate('home');
+                                    }}>
+                                        Cerrar Sesión
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button className="btn btn-secondary" onClick={() => navigate('home')}>
+                                        Iniciar Sesión
+                                    </button>
+                                    <button className="btn btn-primary" onClick={() => navigate('home')}>
+                                        Empezar
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </nav>
+            );
+        }
+
+        // Componente de Página de Inicio
+        function HomePage({ navigate, login }) {
+            return (
+                <>
+                    <section className="hero">
+                        <h1>El Mercado de Oficios Profesionales</h1>
+                        <p>Plataforma impulsada por IA que conecta profesionales calificados con proyectos de calidad</p>
+                        <div className="hero-buttons">
+                            <button className="btn btn-primary" style={{padding: '1rem 2rem', fontSize: '1.125rem'}} 
+                                onClick={() => login('tradesperson')}>
+                                Soy un Profesional
+                            </button>
+                            <button className="btn btn-secondary" style={{padding: '1rem 2rem', fontSize: '1.125rem', background: 'white'}}
+                                onClick={() => login('client')}>
+                                Necesito un Profesional
+                            </button>
+                        </div>
+                    </section>
+
+                    <section className="features">
+                        <h2 className="section-title">Características Revolucionarias con IA</h2>
+                        <div className="feature-grid">
+                            <div className="feature-card">
+                                <div className="feature-icon">🎯</div>
+                                <h3>Puntuación de IA™</h3>
+                                <p>Calificación profesional dinámica que analiza habilidades, confiabilidad, calidad y crecimiento. Demuestra tu experiencia con datos.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🤖</div>
+                                <h3>Asistente BuildBot</h3>
+                                <p>Toma una foto, obtén alcance del trabajo instantáneo, lista de materiales y estimaciones de presupuesto con IA.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">⚡</div>
+                                <h3>SmartMatch™</h3>
+                                <p>La IA empareja proyectos con profesionales perfectos según habilidades, ubicación, disponibilidad y éxito pasado.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">📱</div>
+                                <h3>Comandos de Voz</h3>
+                                <p>Gestión de trabajos manos libres. Registra horas, añade gastos y envía actualizaciones mientras trabajas.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">💼</div>
+                                <h3>Centro de Negocios</h3>
+                                <p>Herramientas completas: contabilidad IA, generador de facturas, programación y predicciones de flujo de efectivo.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🔍</div>
+                                <h3>Verificación de Calidad</h3>
+                                <p>La IA analiza fotos de trabajo para cumplimiento de códigos y estándares de calidad. Detecta errores antes de que sean costosos.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section style={{background: '#1e293b', color: 'white', padding: '4rem 2rem', textAlign: 'center'}}>
+                        <h2 style={{fontSize: '2.5rem', marginBottom: '1rem'}}>Únete a la Revolución de los Oficios</h2>
+                        <p style={{fontSize: '1.25rem', marginBottom: '2rem', opacity: 0.9}}>
+                            Más de 10,000 profesionales ya usan Trade Shop
+                        </p>
+                        <button className="btn btn-success" style={{padding: '1rem 2rem', fontSize: '1.125rem'}}
+                            onClick={() => login('tradesperson')}>
+                            Iniciar Prueba Gratuita
+                        </button>
+                    </section>
+                </>
+            );
+        }
+
+        // Componente de Panel de Control
+        function Dashboard({ user, openModal }) {
+            const [projects, setProjects] = useState([
+                {
+                    id: 1,
+                    title: 'Renovación de Cocina - Recableado Completo',
+                    client: 'Familia Anderson',
+                    location: 'Dallas, TX',
+                    budget: '$8,500',
+                    status: 'active',
+                    deadline: '2024-12-15',
+                    progress: 65
+                },
+                {
+                    id: 2,
+                    title: 'Actualización de Iluminación Oficina Comercial',
+                    client: 'Tech Corp',
+                    location: 'Plano, TX',
+                    budget: '$24,000',
+                    status: 'new',
+                    deadline: '2024-12-20',
+                    progress: 0
+                },
+                {
+                    id: 3,
+                    title: 'Instalación Eléctrica Casa de Piscina',
+                    client: 'Residencia Martínez',
+                    location: 'Frisco, TX',
+                    budget: '$6,200',
+                    status: 'completed',
+                    deadline: '2024-11-10',
+                    progress: 100
+                }
+            ]);
+
+            const handleNewProject = () => {
+                openModal(<NewProjectForm onSubmit={(project) => {
+                    setProjects([{...project, id: Date.now(), status: 'new', progress: 0}, ...projects]);
+                }} />);
+            };
+
+            const handleAIAnalysis = () => {
+                openModal(<AIProjectAnalyzer />);
+            };
+
+            return (
+                <div className="dashboard">
+                    <div className="dashboard-header">
+                        <h1 className="dashboard-title">
+                            Bienvenido de nuevo, {user.name} 👋
+                        </h1>
+                        {user.type === 'tradesperson' ? (
+                            <button className="btn btn-primary" onClick={handleNewProject}>
+                                + Nuevo Proyecto
+                            </button>
+                        ) : (
+                            <button className="btn btn-primary" onClick={handleNewProject}>
+                                + Publicar Proyecto
+                            </button>
+                        )}
+                    </div>
+
+                    {user.type === 'tradesperson' && (
+                        <AIScoreCard score={user.aiScore} />
+                    )}
+
+                    <div className="dashboard-grid">
+                        <div className="stat-card">
+                            <div className="stat-label">Proyectos Activos</div>
+                            <div className="stat-value">
+                                {projects.filter(p => p.status === 'active').length}
+                            </div>
+                            <div className="stat-change positive">↑ 2 esta semana</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-label">Ingresos Este Mes</div>
+                            <div className="stat-value">$38.5K</div>
+                            <div className="stat-change positive">↑ 23% vs mes pasado</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-label">Tiempo Respuesta Prom.</div>
+                            <div className="stat-value">1.2hrs</div>
+                            <div className="stat-change positive">↓ 15 min mejora</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-label">Satisfacción Cliente</div>
+                            <div className="stat-value">4.9/5.0</div>
+                            <div className="stat-change positive">↑ desde 4.7</div>
+                        </div>
+                    </div>
+
+                    <div className="projects-section">
+                        <div className="section-header">
+                            <h2>Tus Proyectos</h2>
+                            <button className="btn btn-secondary" onClick={handleAIAnalysis}>
+                                🤖 Análisis con IA
+                            </button>
+                        </div>
+                        <div className="project-list">
+                            {projects.map(project => (
+                                <ProjectCard key={project.id} project={project} />
+                            ))}
+                        </div>
+                    </div>
+
+                    <AIAssistant userType={user.type} />
+                </div>
+            );
+        }
+
+        // Componente de Tarjeta de Puntuación IA
+        function AIScoreCard({ score }) {
+            return (
+                <div className="ai-score-card">
+                    <div className="ai-score-header">
+                        <div>
+                            <h2 style={{marginBottom: '0.5rem'}}>Puntuación de IA™</h2>
+                            <p style={{opacity: 0.9}}>Top 5% de electricistas en tu región</p>
+                        </div>
+                        <div className="ai-score-value">{score}</div>
+                    </div>
+                    <div className="score-breakdown">
+                        <div className="score-item">
+                            <div className="score-item-label">Verificación Habilidades</div>
+                            <div className="score-item-value">92/100</div>
+                        </div>
+                        <div className="score-item">
+                            <div className="score-item-label">Confiabilidad</div>
+                            <div className="score-item-value">95/100</div>
+                        </div>
+                        <div className="score-item">
+                            <div className="score-item-label">Calidad</div>
+                            <div className="score-item-value">88/100</div>
+                        </div>
+                        <div className="score-item">
+                            <div className="score-item-label">Seguridad</div>
+                            <div className="score-item-value">97/100</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Componente de Tarjeta de Proyecto
+        function ProjectCard({ project }) {
+            const badgeClass = project.status === 'new' ? 'badge-new' : 
+                              project.status === 'active' ? 'badge-active' : 'badge-completed';
+            
+            const statusText = {
+                'new': 'NUEVO',
+                'active': 'ACTIVO',
+                'completed': 'COMPLETADO'
+            };
+            
+            return (
+                <div className="project-card">
+                    <div className="project-header">
+                        <div>
+                            <div className="project-title">{project.title}</div>
+                            <div className="project-meta">
+                                {project.client} • {project.location}
+                            </div>
+                        </div>
+                        <span className={`project-badge ${badgeClass}`}>
+                            {statusText[project.status]}
+                        </span>
+                    </div>
+                    <div className="project-details">
+                        <div className="project-detail">
+                            <span className="project-detail-label">Presupuesto</span>
+                            <span className="project-detail-value">{project.budget}</span>
+                        </div>
+                        <div className="project-detail">
+                            <span className="project-detail-label">Fecha Límite</span>
+                            <span className="project-detail-value">{project.deadline}</span>
+                        </div>
+                        <div className="project-detail">
+                            <span className="project-detail-label">Progreso</span>
+                            <span className="project-detail-value">{project.progress}%</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Componente de Asistente IA
+        function AIAssistant({ userType }) {
+            const [messages, setMessages] = useState([
+                {
+                    role: 'assistant',
+                    content: `¡Hola! Soy BuildBot, tu asistente de IA. Puedo ayudarte con estimaciones de proyectos, cálculos de materiales, programación y más. ¿En qué puedo ayudarte hoy?`
+                }
+            ]);
+            const [input, setInput] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            const sendMessage = async () => {
+                if (!input.trim() || loading) return;
+
+                const userMessage = input;
+                setInput('');
+                setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+                setLoading(true);
+
+                try {
+                    const response = await fetch('https://api.anthropic.com/v1/messages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            model: 'claude-sonnet-4-20250514',
+                            max_tokens: 1000,
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: `Eres BuildBot, un asistente de IA para Trade Shop, una plataforma de mercado de oficios profesionales. Ayudas a ${userType === 'tradesperson' ? 'profesionales con estimaciones de proyectos, cálculos de materiales, programación, consejos de negocios y preguntas técnicas' : 'clientes a encontrar los profesionales adecuados, entender el alcance del proyecto, presupuesto y expectativas de cronograma'}.
+
+Pregunta del usuario: ${userMessage}
+
+Proporciona una respuesta útil, profesional y accionable EN ESPAÑOL. Sé específico con números cuando sea posible. Mantén las respuestas concisas pero informativas.`
+                                }
+                            ]
+                        })
+                    });
+
+                    const data = await response.json();
+                    const assistantMessage = data.content[0].text;
+
+                    setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
+                } catch (error) {
+                    setMessages(prev => [...prev, { 
+                        role: 'assistant', 
+                        content: 'Lo siento, encontré un error. Por favor intenta de nuevo.' 
+                    }]);
+                }
+
+                setLoading(false);
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            };
+
+            return (
+                <div className="ai-assistant">
+                    <div className="ai-assistant-header">
+                        <span style={{fontSize: '2rem'}}>🤖</span>
+                        <div>
+                            <div className="ai-assistant-title">Asistente IA BuildBot</div>
+                            <div style={{fontSize: '0.875rem', color: '#6366f1'}}>
+                                Tu experto en oficios 24/7
+                            </div>
+                        </div>
+                    </div>
+                    <div className="ai-chat-container">
+                        {messages.map((msg, idx) => (
+                            <div key={idx} className={`ai-message ${msg.role}`}>
+                                <strong>{msg.role === 'user' ? 'Tú' : 'BuildBot'}:</strong>
+                                <div style={{marginTop: '0.25rem', whiteSpace: 'pre-wrap'}}>
+                                    {msg.content}
+                                </div>
+                            </div>
+                        ))}
+                        {loading && (
+                            <div className="ai-message assistant">
+                                <div className="spinner"></div>
+                            </div>
+                        )}
+                    </div>
+                    <div className="ai-input-container">
+                        <input
+                            type="text"
+                            className="form-input ai-input"
+                            placeholder="Pregúntale a BuildBot cualquier cosa..."
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            disabled={loading}
+                        />
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={sendMessage}
+                            disabled={loading || !input.trim()}
+                        >
+                            Enviar
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Componente de Analizador de Proyectos con IA
+        function AIProjectAnalyzer() {
+            const [imageData, setImageData] = useState(null);
+            const [description, setDescription] = useState('');
+            const [analysis, setAnalysis] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const handleImageUpload = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        setImageData(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const analyzeProject = async () => {
+                if (!description && !imageData) return;
+                
+                setLoading(true);
+
+                try {
+                    const messages = [];
+                    
+                    if (imageData) {
+                        const base64Data = imageData.split(',')[1];
+                        messages.push({
+                            role: 'user',
+                            content: [
+                                {
+                                    type: 'image',
+                                    source: {
+                                        type: 'base64',
+                                        media_type: 'image/jpeg',
+                                        data: base64Data
+                                    }
+                                },
+                                {
+                                    type: 'text',
+                                    text: `Analiza esta imagen del sitio del proyecto. ${description ? `Contexto adicional: ${description}` : ''}\n\nProporciona una evaluación profesional EN ESPAÑOL incluyendo:\n1. Alcance del proyecto y complejidad\n2. Cronograma estimado\n3. Rango de presupuesto\n4. Materiales requeridos (con cantidades)\n5. Desafíos potenciales\n6. Enfoque recomendado\n\nFormatea como un análisis estructurado.`
+                                }
+                            ]
+                        });
+                    } else {
+                        messages.push({
+                            role: 'user',
+                            content: `Analiza este proyecto: ${description}\n\nProporciona EN ESPAÑOL:\n1. Evaluación del alcance\n2. Estimación de cronograma\n3. Rango de presupuesto\n4. Lista de materiales\n5. Consideraciones clave\n6. Recomendaciones`
+                        });
+                    }
+
+                    const response = await fetch('https://api.anthropic.com/v1/messages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            model: 'claude-sonnet-4-20250514',
+                            max_tokens: 2000,
+                            messages: messages
+                        })
+                    });
+
+                    const data = await response.json();
+                    setAnalysis(data.content[0].text);
+                } catch (error) {
+                    setAnalysis('Error al analizar el proyecto. Por favor intenta de nuevo.');
+                }
+
+                setLoading(false);
+            };
+
+            return (
+                <div>
+                    <h2 style={{marginBottom: '1rem'}}>Analizador de Proyectos con IA</h2>
+                    <p style={{color: '#6b7280', marginBottom: '1.5rem'}}>
+                        Sube una foto del sitio del proyecto y/o proporciona una descripción para análisis con IA
+                    </p>
+
+                    <div className="form-group">
+                        <label className="form-label">Subir Foto del Proyecto (Opcional)</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="form-input"
+                        />
+                        {imageData && (
+                            <img src={imageData} alt="Proyecto" className="uploaded-image" />
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Descripción del Proyecto</label>
+                        <textarea
+                            className="form-textarea"
+                            placeholder="Describe el proyecto: tipo de trabajo, dimensiones, requisitos especiales, etc."
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+
+                    <button 
+                        className="btn btn-primary" 
+                        onClick={analyzeProject}
+                        disabled={loading || (!description && !imageData)}
+                        style={{width: '100%', marginBottom: '1rem'}}
+                    >
+                        {loading ? 'Analizando...' : '🤖 Analizar con IA'}
+                    </button>
+
+                    {analysis && (
+                        <div style={{
+                            background: '#f3f4f6',
+                            padding: '1.5rem',
+                            borderRadius: '0.75rem',
+                            marginTop: '1rem'
+                        }}>
+                            <h3 style={{marginBottom: '1rem', color: '#2563eb'}}>
+                                Resultados del Análisis de IA
+                            </h3>
+                            <div style={{whiteSpace: 'pre-wrap', lineHeight: '1.6'}}>
+                                {analysis}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Componente de Formulario de Nuevo Proyecto
+        function NewProjectForm({ onSubmit }) {
+            const [formData, setFormData] = useState({
+                title: '',
+                client: '',
+                location: '',
+                budget: '',
+                deadline: '',
+                description: ''
+            });
+
+            const [selectedTrades, setSelectedTrades] = useState([]);
+
+            const trades = [
+                'Eléctrico', 'Plomería', 'HVAC', 'Carpintería', 
+                'Pintura', 'Jardinería', 'Techado', 'Albañilería'
+            ];
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSubmit({...formData, trades: selectedTrades});
+            };
+
+            const toggleTrade = (trade) => {
+                setSelectedTrades(prev => 
+                    prev.includes(trade) 
+                        ? prev.filter(t => t !== trade)
+                        : [...prev, trade]
+                );
+            };
+
+            return (
+                <form onSubmit={handleSubmit}>
+                    <h2 style={{marginBottom: '1.5rem'}}>Crear Nuevo Proyecto</h2>
+                    
+                    <div className="form-group">
+                        <label className="form-label">Título del Proyecto</label>
+                        <input
+                            type="text"
+                            className="form-input"
+                            value={formData.title}
+                            onChange={(e) => setFormData({...formData, title: e.target.value})}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Nombre del Cliente</label>
+                        <input
+                            type="text"
+                            className="form-input"
+                            value={formData.client}
+                            onChange={(e) => setFormData({...formData, client: e.target.value})}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Ubicación</label>
+                        <input
+                            type="text"
+                            className="form-input"
+                            placeholder="Ciudad, Estado"
+                            value={formData.location}
+                            onChange={(e) => setFormData({...formData, location: e.target.value})}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Tipos de Oficios Necesarios</label>
+                        <div className="trade-types">
+                            {trades.map(trade => (
+                                <span
+                                    key={trade}
+                                    className={`trade-tag ${selectedTrades.includes(trade) ? 'selected' : ''}`}
+                                    onClick={() => toggleTrade(trade)}
+                                >
+                                    {trade}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Presupuesto</label>
+                        <input
+                            type="text"
+                            className="form-input"
+                            placeholder="$10,000"
+                            value={formData.budget}
+                            onChange={(e) => setFormData({...formData, budget: e.target.value})}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Fecha Límite</label>
+                        <input
+                            type="date"
+                            className="form-input"
+                            value={formData.deadline}
+                            onChange={(e) => setFormData({...formData, deadline: e.target.value})}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Descripción del Proyecto</label>
+                        <textarea
+                            className="form-textarea"
+                            value={formData.description}
+                            onChange={(e) => setFormData({...formData, description: e.target.value})}
+                            placeholder="Descripción detallada del trabajo necesario..."
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className="btn btn-primary" style={{width: '100%'}}>
+                        Crear Proyecto
+                    </button>
+                </form>
+            );
+        }
+
+        // Página de Mercado (Marketplace)
+        function MarketplacePage({ openModal, user }) {
+            const [professionals, setProfessionals] = useState([
+                {
+                    id: 1,
+                    name: 'Miguel Rodríguez',
+                    trade: 'Maestro Electricista',
+                    location: 'Dallas, TX',
+                    aiScore: 928,
+                    yearsExperience: 15,
+                    projectsCompleted: 342,
+                    responseTime: '2 hrs',
+                    rating: 4.9,
+                    reviewCount: 87,
+                    specialties: ['Residencial', 'Comercial', 'Solar', 'Casa Inteligente'],
+                    verified: true,
+                    topRated: true,
+                    avatar: '⚡',
+                    hourlyRate: '$85-120',
+                    availability: 'Disponible',
+                    certifications: [
+                        { name: 'Licencia de Maestro Electricista', date: '2015', icon: '🏆' },
+                        { name: 'Instalación Solar PV', date: '2020', icon: '☀️' },
+                        { name: 'OSHA 30 Horas', date: '2019', icon: '🛡️' }
+                    ],
+                    recentReviews: [
+                        { name: 'Juan Anderson', stars: 5, text: 'Excelente trabajo en la remodelación de nuestra cocina. Muy profesional y puntual.' },
+                        { name: 'Sara Míller', stars: 5, text: 'Instaló nuestros paneles solares perfectamente. Gran comunicación.' }
+                    ],
+                    scoreBreakdown: {
+                        skill: 98,
+                        reliability: 96,
+                        quality: 94,
+                        safety: 100
+                    }
+                },
+                {
+                    id: 2,
+                    name: 'Jaime Chen',
+                    trade: 'Plomero Licenciado',
+                    location: 'Plano, TX',
+                    aiScore: 892,
+                    yearsExperience: 12,
+                    projectsCompleted: 278,
+                    responseTime: '1.5 hrs',
+                    rating: 4.8,
+                    reviewCount: 64,
+                    specialties: ['Servicio Emergencia', 'Reemplazo Tuberías', 'Calentadores Agua', 'Limpieza Drenajes'],
+                    verified: true,
+                    topRated: true,
+                    avatar: '🔧',
+                    hourlyRate: '$75-110',
+                    availability: 'Disponible',
+                    certifications: [
+                        { name: 'Licencia de Maestro Plomero', date: '2016', icon: '🏆' },
+                        { name: 'Prevención de Reflujo', date: '2018', icon: '💧' }
+                    ],
+                    recentReviews: [
+                        { name: 'Tomás Wilson', stars: 5, text: '¡Arregló nuestra fuga de emergencia a las 2am. Verdadero profesional!' },
+                        { name: 'Lisa Brown', stars: 5, text: 'Reemplazó nuestro calentador de agua rápida y eficientemente.' }
+                    ],
+                    scoreBreakdown: {
+                        skill: 92,
+                        reliability: 98,
+                        quality: 90,
+                        safety: 95
+                    }
+                },
+                {
+                    id: 3,
+                    name: 'David Thompson',
+                    trade: 'Especialista HVAC',
+                    location: 'Frisco, TX',
+                    aiScore: 875,
+                    yearsExperience: 10,
+                    projectsCompleted: 195,
+                    responseTime: '3 hrs',
+                    rating: 4.9,
+                    reviewCount: 52,
+                    specialties: ['Instalación', 'Reparación', 'Mantenimiento', 'Eficiencia Energética'],
+                    verified: true,
+                    topRated: false,
+                    avatar: '❄️',
+                    hourlyRate: '$80-115',
+                    availability: 'Disponible',
+                    certifications: [
+                        { name: 'Certificación EPA Universal', date: '2014', icon: '🌍' },
+                        { name: 'Certificado NATE', date: '2015', icon: '🏆' }
+                    ],
+                    recentReviews: [
+                        { name: 'Mike Davis', stars: 5, text: 'Instaló nuestra nueva unidad de AC perfectamente. Muy conocedor.' }
+                    ],
+                    scoreBreakdown: {
+                        skill: 90,
+                        reliability: 88,
+                        quality: 92,
+                        safety: 93
+                    }
+                },
+                {
+                    id: 4,
+                    name: 'Roberto Martínez',
+                    trade: 'Maestro Carpintero',
+                    location: 'Dallas, TX',
+                    aiScore: 910,
+                    yearsExperience: 18,
+                    projectsCompleted: 412,
+                    responseTime: '2.5 hrs',
+                    rating: 5.0,
+                    reviewCount: 96,
+                    specialties: ['Gabinetes Personalizados', 'Molduras', 'Terrazas', 'Estructura'],
+                    verified: true,
+                    topRated: true,
+                    avatar: '🪚',
+                    hourlyRate: '$70-105',
+                    availability: 'Ocupado',
+                    certifications: [
+                        { name: 'Certificación Maestro Carpintero', date: '2012', icon: '🏆' },
+                        { name: 'Especialista en Gabinetes', date: '2010', icon: '🪵' }
+                    ],
+                    recentReviews: [
+                        { name: 'Jennifer Lee', stars: 5, text: '¡Construyó hermosos gabinetes personalizados para nuestra cocina. Absoluto artista!' },
+                        { name: 'Marco Johnson', stars: 5, text: 'La terraza resultó increíble. Mejor carpintero con el que hemos trabajado.' }
+                    ],
+                    scoreBreakdown: {
+                        skill: 100,
+                        reliability: 94,
+                        quality: 98,
+                        safety: 88
+                    }
+                },
+                {
+                    id: 5,
+                    name: 'Jennifer Walsh',
+                    trade: 'Pintora Profesional',
+                    location: 'McKinney, TX',
+                    aiScore: 845,
+                    yearsExperience: 8,
+                    projectsCompleted: 156,
+                    responseTime: '4 hrs',
+                    rating: 4.7,
+                    reviewCount: 43,
+                    specialties: ['Interior', 'Exterior', 'Refinado Gabinetes', 'Papel Tapiz'],
+                    verified: true,
+                    topRated: false,
+                    avatar: '🎨',
+                    hourlyRate: '$50-80',
+                    availability: 'Disponible',
+                    certifications: [
+                        { name: 'Certificación Pintor Profesional', date: '2017', icon: '🏆' }
+                    ],
+                    recentReviews: [
+                        { name: 'Chris Anderson', stars: 5, text: '¡Atención meticulosa al detalle. La casa se ve completamente nueva!' }
+                    ],
+                    scoreBreakdown: {
+                        skill: 86,
+                        reliability: 85,
+                        quality: 88,
+                        safety: 90
+                    }
+                },
+                {
+                    id: 6,
+                    name: 'Carlos Hernández',
+                    trade: 'Arquitecto Paisajista',
+                    location: 'Allen, TX',
+                    aiScore: 887,
+                    yearsExperience: 11,
+                    projectsCompleted: 223,
+                    responseTime: '3.5 hrs',
+                    rating: 4.8,
+                    reviewCount: 58,
+                    specialties: ['Diseño', 'Pavimentación', 'Riego', 'Iluminación Exterior'],
+                    verified: true,
+                    topRated: true,
+                    avatar: '🌳',
+                    hourlyRate: '$65-95',
+                    availability: 'Disponible',
+                    certifications: [
+                        { name: 'Arquitecto Paisajista Licenciado', date: '2013', icon: '🏆' },
+                        { name: 'Especialista en Riego', date: '2015', icon: '💧' }
+                    ],
+                    recentReviews: [
+                        { name: 'Patricia Moore', stars: 5, text: 'Transformó nuestro patio trasero en un oasis. Creativo y profesional.' }
+                    ],
+                    scoreBreakdown: {
+                        skill: 92,
+                        reliability: 90,
+                        quality: 94,
+                        safety: 82
+                    }
+                }
+            ]);
+
+            const [filters, setFilters] = useState({
+                trade: '',
+                location: '',
+                minScore: 0,
+                availability: ''
+            });
+
+            const [filteredProfessionals, setFilteredProfessionals] = useState(professionals);
+
+            useEffect(() => {
+                let filtered = [...professionals];
+
+                if (filters.trade) {
+                    filtered = filtered.filter(p => 
+                        p.trade.toLowerCase().includes(filters.trade.toLowerCase()) ||
+                        p.specialties.some(s => s.toLowerCase().includes(filters.trade.toLowerCase()))
+                    );
+                }
+
+                if (filters.location) {
+                    filtered = filtered.filter(p => 
+                        p.location.toLowerCase().includes(filters.location.toLowerCase())
+                    );
+                }
+
+                if (filters.minScore > 0) {
+                    filtered = filtered.filter(p => p.aiScore >= filters.minScore);
+                }
+
+                if (filters.availability) {
+                    filtered = filtered.filter(p => 
+                        p.availability.toLowerCase() === filters.availability.toLowerCase()
+                    );
+                }
+
+                setFilteredProfessionals(filtered);
+            }, [filters, professionals]);
+
+            const viewProfile = (professional) => {
+                openModal(<ProfessionalDetailView professional={professional} />);
+            };
+
+            return (
+                <div className="marketplace-container">
+                    <div className="marketplace-header">
+                        <h1 className="marketplace-title">Encuentra Tu Profesional Perfecto</h1>
+                        <p className="marketplace-subtitle">
+                            Explora profesionales verificados por IA con historial comprobado
+                        </p>
+                    </div>
+
+                    <div className="filters-section">
+                        <h3 style={{marginBottom: '1rem', fontSize: '1.125rem', fontWeight: 700}}>
+                            🔍 Filtrar Profesionales
+                        </h3>
+                        <div className="filters-grid">
+                            <div className="filter-group">
+                                <label className="filter-label">Oficio / Especialidad</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    placeholder="ej., Electricista, Plomero..."
+                                    value={filters.trade}
+                                    onChange={(e) => setFilters({...filters, trade: e.target.value})}
+                                />
+                            </div>
+                            <div className="filter-group">
+                                <label className="filter-label">Ubicación</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    placeholder="Ciudad, Estado"
+                                    value={filters.location}
+                                    onChange={(e) => setFilters({...filters, location: e.target.value})}
+                                />
+                            </div>
+                            <div className="filter-group">
+                                <label className="filter-label">Puntuación IA Mínima</label>
+                                <select
+                                    className="form-select"
+                                    value={filters.minScore}
+                                    onChange={(e) => setFilters({...filters, minScore: parseInt(e.target.value)})}
+                                >
+                                    <option value={0}>Cualquier Puntuación</option>
+                                    <option value={800}>800+</option>
+                                    <option value={850}>850+</option>
+                                    <option value={900}>900+ (Elite)</option>
+                                </select>
+                            </div>
+                            <div className="filter-group">
+                                <label className="filter-label">Disponibilidad</label>
+                                <select
+                                    className="form-select"
+                                    value={filters.availability}
+                                    onChange={(e) => setFilters({...filters, availability: e.target.value})}
+                                >
+                                    <option value="">Cualquiera</option>
+                                    <option value="Disponible">Disponible Ahora</option>
+                                    <option value="Ocupado">Reservando Futuro</option>
+                                </select>
+                            </div>
+                        </div>
+                        {(filters.trade || filters.location || filters.minScore > 0 || filters.availability) && (
+                            <button 
+                                className="btn btn-secondary" 
+                                style={{marginTop: '1rem'}}
+                                onClick={() => setFilters({trade: '', location: '', minScore: 0, availability: ''})}
+                            >
+                                Limpiar Filtros
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="results-count">
+                        Mostrando {filteredProfessionals.length} profesional{filteredProfessionals.length !== 1 ? 'es' : ''}
+                    </div>
+
+                    {filteredProfessionals.length > 0 ? (
+                        <div className="professionals-grid">
+                            {filteredProfessionals.map(professional => (
+                                <ProfessionalCard 
+                                    key={professional.id} 
+                                    professional={professional}
+                                    onClick={() => viewProfile(professional)}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="empty-state">
+                            <div className="empty-state-icon">🔍</div>
+                            <div className="empty-state-title">No se encontraron profesionales</div>
+                            <p>Intenta ajustar tus filtros para ver más resultados</p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Componente de Tarjeta de Profesional
+        function ProfessionalCard({ professional, onClick }) {
+            return (
+                <div className="professional-card" onClick={onClick}>
+                    <div className="professional-header">
+                        <div className="professional-badge-container">
+                            {professional.verified && (
+                                <span className="verified-badge">
+                                    ✓ Verificado
+                                </span>
+                            )}
+                            {professional.topRated && (
+                                <span className="top-rated-badge">
+                                    ⭐ Top Calificado
+                                </span>
+                            )}
+                        </div>
+                        <div className="professional-avatar">
+                            {professional.avatar}
+                        </div>
+                        <div className="professional-name">{professional.name}</div>
+                        <div className="professional-trade">{professional.trade}</div>
+                        <div style={{color: '#6b7280', fontSize: '0.875rem', marginTop: '0.25rem'}}>
+                            📍 {professional.location}
+                        </div>
+                    </div>
+
+                    <div className="professional-score">
+                        <div className="score-display">
+                            <div className="score-number">{professional.aiScore}</div>
+                            <div style={{textAlign: 'left'}}>
+                                <div style={{fontWeight: 700, fontSize: '1rem'}}>Puntuación de IA™</div>
+                                <div className="score-label">
+                                    {professional.aiScore >= 900 ? 'Profesional Elite' :
+                                     professional.aiScore >= 850 ? 'Altamente Calificado' :
+                                     'Profesional Calificado'}
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'center', gap: '0.25rem'}}>
+                            {[...Array(5)].map((_, i) => (
+                                <span key={i} style={{fontSize: '1rem'}}>
+                                    {i < Math.floor(professional.rating) ? '⭐' : '☆'}
+                                </span>
+                            ))}
+                            <span style={{marginLeft: '0.5rem', fontSize: '0.875rem'}}>
+                                {professional.rating} ({professional.reviewCount})
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="professional-body">
+                        <div className="professional-stats">
+                            <div className="stat-item">
+                                <div className="stat-item-value">{professional.yearsExperience}</div>
+                                <div className="stat-item-label">Años Exp.</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-item-value">{professional.projectsCompleted}</div>
+                                <div className="stat-item-label">Proyectos</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-item-value">{professional.responseTime}</div>
+                                <div className="stat-item-label">Respuesta</div>
+                            </div>
+                        </div>
+
+                        <div className="professional-specialties">
+                            <div className="specialties-title">ESPECIALIDADES</div>
+                            <div className="specialties-list">
+                                {professional.specialties.map((specialty, idx) => (
+                                    <span key={idx} className="specialty-tag">{specialty}</span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="professional-reviews">
+                            {professional.recentReviews.slice(0, 1).map((review, idx) => (
+                                <div key={idx} className="review-item">
+                                    <div className="review-header">
+                                        <span className="reviewer-name">{review.name}</span>
+                                        <span className="review-stars">
+                                            {'⭐'.repeat(review.stars)}
+                                        </span>
+                                    </div>
+                                    <div className="review-text">"{review.text}"</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: '1rem',
+                            paddingTop: '1rem',
+                            borderTop: '2px solid #f3f4f6'
+                        }}>
+                            <div>
+                                <div style={{fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem'}}>
+                                    TARIFA POR HORA
+                                </div>
+                                <div style={{fontSize: '1.125rem', fontWeight: 700, color: '#2563eb'}}>
+                                    {professional.hourlyRate}
+                                </div>
+                            </div>
+                            <div>
+                                <span style={{
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 700,
+                                    background: professional.availability === 'Disponible' ? '#d1fae5' : '#fef3c7',
+                                    color: professional.availability === 'Disponible' ? '#065f46' : '#92400e'
+                                }}>
+                                    {professional.availability}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="professional-actions">
+                            <button className="btn btn-primary btn-full">
+                                Ver Perfil Completo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Componente de Vista Detallada del Profesional
+        function ProfessionalDetailView({ professional }) {
+            return (
+                <div className="profile-detail-container">
+                    <div className="profile-detail-header">
+                        <div className="profile-detail-avatar">
+                            {professional.avatar}
+                        </div>
+                        <div className="profile-detail-info">
+                            <div className="profile-detail-name">{professional.name}</div>
+                            <div style={{fontSize: '1.25rem', color: '#2563eb', fontWeight: 600, marginBottom: '0.5rem'}}>
+                                {professional.trade}
+                            </div>
+                            <div style={{color: '#6b7280', marginBottom: '0.5rem'}}>
+                                📍 {professional.location}
+                            </div>
+                            <div style={{display: 'flex', gap: '0.5rem', marginBottom: '1rem'}}>
+                                {professional.verified && (
+                                    <span className="verified-badge">✓ Verificado</span>
+                                )}
+                                {professional.topRated && (
+                                    <span className="top-rated-badge">⭐ Top Calificado</span>
+                                )}
+                            </div>
+                            <div style={{display: 'flex', gap: '1rem'}}>
+                                <button className="btn btn-primary">Solicitar Cotización</button>
+                                <button className="btn btn-secondary">Enviar Mensaje</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="profile-detail-section">
+                        <h3>Desglose de Puntuación de IA™</h3>
+                        <div style={{
+                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                            color: 'white',
+                            padding: '2rem',
+                            borderRadius: '1rem',
+                            marginBottom: '1rem',
+                            textAlign: 'center'
+                        }}>
+                            <div style={{fontSize: '4rem', fontWeight: 800}}>{professional.aiScore}</div>
+                            <div style={{fontSize: '1.25rem', opacity: 0.9}}>
+                                {professional.aiScore >= 900 ? 'Profesional Elite - Top 5%' :
+                                 professional.aiScore >= 850 ? 'Altamente Calificado - Top 15%' :
+                                 'Profesional Calificado'}
+                            </div>
+                        </div>
+                        <div className="score-breakdown-detail">
+                            <div className="score-breakdown-item">
+                                <div className="score-breakdown-label">Verificación de Habilidades</div>
+                                <div className="score-breakdown-value">{professional.scoreBreakdown.skill}</div>
+                                <div className="score-breakdown-max">/100</div>
+                            </div>
+                            <div className="score-breakdown-item">
+                                <div className="score-breakdown-label">Confiabilidad</div>
+                                <div className="score-breakdown-value">{professional.scoreBreakdown.reliability}</div>
+                                <div className="score-breakdown-max">/100</div>
+                            </div>
+                            <div className="score-breakdown-item">
+                                <div className="score-breakdown-label">Métricas de Calidad</div>
+                                <div className="score-breakdown-value">{professional.scoreBreakdown.quality}</div>
+                                <div className="score-breakdown-max">/100</div>
+                            </div>
+                            <div className="score-breakdown-item">
+                                <div className="score-breakdown-label">Registro de Seguridad</div>
+                                <div className="score-breakdown-value">{professional.scoreBreakdown.safety}</div>
+                                <div className="score-breakdown-max">/100</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="profile-detail-section">
+                        <h3>Experiencia y Estadísticas</h3>
+                        <div className="professional-stats">
+                            <div className="stat-item">
+                                <div className="stat-item-value">{professional.yearsExperience} años</div>
+                                <div className="stat-item-label">Experiencia</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-item-value">{professional.projectsCompleted}</div>
+                                <div className="stat-item-label">Proyectos Completados</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-item-value">{professional.responseTime}</div>
+                                <div className="stat-item-label">Respuesta Prom.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="profile-detail-section">
+                        <h3>Especialidades</h3>
+                        <div className="specialties-list">
+                            {professional.specialties.map((specialty, idx) => (
+                                <span key={idx} className="specialty-tag" style={{fontSize: '1rem', padding: '0.5rem 1rem'}}>
+                                    {specialty}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="profile-detail-section">
+                        <h3>Certificaciones y Licencias</h3>
+                        <div className="certifications-list">
+                            {professional.certifications.map((cert, idx) => (
+                                <div key={idx} className="certification-item">
+                                    <div className="certification-icon">{cert.icon}</div>
+                                    <div className="certification-info">
+                                        <div className="certification-name">{cert.name}</div>
+                                        <div className="certification-date">Obtenida: {cert.date}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="profile-detail-section">
+                        <h3>Portafolio</h3>
+                        <div className="work-gallery">
+                            {[...Array(6)].map((_, idx) => (
+                                <div key={idx} className="work-image">
+                                    {professional.avatar}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="profile-detail-section">
+                        <h3>Reseñas de Clientes ({professional.reviewCount})</h3>
+                        <div style={{marginBottom: '1rem'}}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem'}}>
+                                <div style={{fontSize: '3rem', fontWeight: 800, color: '#2563eb'}}>
+                                    {professional.rating}
+                                </div>
+                                <div>
+                                    <div style={{display: 'flex', gap: '0.25rem', marginBottom: '0.25rem'}}>
+                                        {[...Array(5)].map((_, i) => (
+                                            <span key={i} style={{fontSize: '1.5rem', color: '#f59e0b'}}>
+                                                {i < Math.floor(professional.rating) ? '⭐' : '☆'}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div style={{color: '#6b7280'}}>
+                                        Basado en {professional.reviewCount} reseñas
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {professional.recentReviews.map((review, idx) => (
+                            <div key={idx} className="review-item" style={{
+                                background: '#f9fafb',
+                                padding: '1rem',
+                                borderRadius: '0.5rem',
+                                marginBottom: '0.75rem'
+                            }}>
+                                <div className="review-header">
+                                    <span className="reviewer-name">{review.name}</span>
+                                    <span className="review-stars">
+                                        {'⭐'.repeat(review.stars)}
+                                    </span>
+                                </div>
+                                <div className="review-text" style={{marginTop: '0.5rem'}}>
+                                    "{review.text}"
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{
+                        background: '#f3f4f6',
+                        padding: '1.5rem',
+                        borderRadius: '0.75rem',
+                        marginTop: '2rem'
+                    }}>
+                        <div style={{fontWeight: 600, marginBottom: '0.5rem'}}>Información de Precios</div>
+                        <div style={{fontSize: '1.5rem', fontWeight: 700, color: '#2563eb', marginBottom: '0.5rem'}}>
+                            {professional.hourlyRate}/hora
+                        </div>
+                        <div style={{color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem'}}>
+                            Disponibilidad: {professional.availability}
+                        </div>
+                        <button className="btn btn-success" style={{width: '100%'}}>
+                            Solicitar Cotización
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Página de Precios
+        function PricingPage({ navigate }) {
+            return (
+                <div>
+                    <section className="hero">
+                        <h1>Precios Simples y Transparentes</h1>
+                        <p>Elige el plan que se adapte a tu negocio</p>
+                    </section>
+
+                    <div className="pricing-grid">
+                        <div className="pricing-card">
+                            <div className="pricing-tier">Aprendiz</div>
+                            <div className="pricing-price">Gratis</div>
+                            <div className="pricing-period">Para siempre</div>
+                            <ul className="pricing-features">
+                                <li>Perfil básico con 25 imágenes</li>
+                                <li>Recibir 5 solicitudes/mes</li>
+                                <li>Puntuación de IA™ (básica)</li>
+                                <li>Acceso a cursos gratuitos</li>
+                                <li>Procesamiento estándar (3.5%)</li>
+                            </ul>
+                            <button className="btn btn-secondary" style={{width: '100%'}}>
+                                Empezar
+                            </button>
+                        </div>
+
+                        <div className="pricing-card featured">
+                            <div className="pricing-badge">MÁS POPULAR</div>
+                            <div className="pricing-tier">Oficial</div>
+                            <div className="pricing-price">$49</div>
+                            <div className="pricing-period">por mes</div>
+                            <ul className="pricing-features">
+                                <li>Todo en Aprendiz</li>
+                                <li>Solicitudes ilimitadas</li>
+                                <li>Colocación prioritaria</li>
+                                <li>Asistente BuildBot IA (100/mes)</li>
+                                <li>Centro de Negocios</li>
+                                <li>Constructor Portafolio AR</li>
+                                <li>Tarifas reducidas (2.5%)</li>
+                                <li>Facturas personalizadas</li>
+                            </ul>
+                            <button className="btn btn-primary" style={{width: '100%'}}>
+                                Iniciar Prueba Gratuita
+                            </button>
+                        </div>
+
+                        <div className="pricing-card">
+                            <div className="pricing-tier">Maestro</div>
+                            <div className="pricing-price">$149</div>
+                            <div className="pricing-period">por mes</div>
+                            <ul className="pricing-features">
+                                <li>Todo en Oficial</li>
+                                <li>Verificación de Calidad IA (ilimitada)</li>
+                                <li>Gestión de Flota y Equipo (10 personas)</li>
+                                <li>Inteligencia Cadena Suministro</li>
+                                <li>Insignia respuesta 24hrs garantizada</li>
+                                <li>Portafolio video (4K)</li>
+                                <li>Gerente de cuenta dedicado</li>
+                                <li>Tarifas más bajas (1.9%)</li>
+                                <li>Acceso API</li>
+                            </ul>
+                            <button className="btn btn-secondary" style={{width: '100%'}}>
+                                Contactar Ventas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Página de Características
+        function FeaturesPage({ navigate }) {
+            return (
+                <div>
+                    <section className="hero">
+                        <h1>Características Poderosas para Profesionales Modernos</h1>
+                        <p>Todo lo que necesitas para dirigir un negocio de oficios profesional</p>
+                    </section>
+
+                    <section className="features">
+                        <div className="feature-grid">
+                            <div className="feature-card">
+                                <div className="feature-icon">🎯</div>
+                                <h3>Puntuación de IA™</h3>
+                                <p>Tu reputación profesional, cuantificada. Puntuación dinámica analiza más de 15 métricas incluyendo habilidades, confiabilidad, calidad y registro de seguridad.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🤖</div>
+                                <h3>Asistente BuildBot IA</h3>
+                                <p>Asistente IA 24/7 que ayuda con estimaciones de proyectos, cálculos de materiales, programación y preguntas técnicas.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">⚡</div>
+                                <h3>Algoritmo SmartMatch™</h3>
+                                <p>Emparejamiento con proyectos perfectos basado en tus habilidades, ubicación, disponibilidad e historial de éxito.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">💼</div>
+                                <h3>Centro de Comando de Negocios</h3>
+                                <p>Suite completa de gestión empresarial con contabilidad IA, facturación automatizada, predicciones de flujo de efectivo y herramientas de preparación de impuestos.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🔍</div>
+                                <h3>Verificación de Calidad</h3>
+                                <p>IA de visión por computadora verifica tu trabajo contra cumplimiento de códigos y mejores prácticas. Obtén retroalimentación instantánea antes de inspecciones.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">📱</div>
+                                <h3>Controles Activados por Voz</h3>
+                                <p>Gestiona tu negocio sin manos mientras trabajas. Registra horas, rastrea gastos, envía actualizaciones y programa citas usando comandos de voz.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🎓</div>
+                                <h3>Academia de Oficios</h3>
+                                <p>Plataforma de aprendizaje continuo con tutoriales en video, tutor IA, mentoría entre pares y certificaciones de la industria.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">🛡️</div>
+                                <h3>Protección InsureShield™</h3>
+                                <p>Verificación de seguro integrada, gestión de reclamos y Garantía Trade Shop respaldando trabajo de calidad hasta $10K.</p>
+                            </div>
+                            <div className="feature-card">
+                                <div className="feature-icon">📊</div>
+                                <h3>Inteligencia de Cadena de Suministro</h3>
+                                <p>IA monitorea precios de materiales y sugiere ventanas óptimas de compra. Obtén descuentos del 10-25% a través de nuestra red de proveedores.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        }
+
+        // Componente Modal
+        function Modal({ children, closeModal }) {
+            return (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <div className="modal-title"></div>
+                            <button className="modal-close" onClick={closeModal}>×</button>
+                        </div>
+                        <div className="modal-body">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Renderizar la aplicación
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

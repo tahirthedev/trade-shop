@@ -1,0 +1,222 @@
+{
+  "info": {
+    "name": "TradeShop Backend API - MVP",
+    "owner": "TradeShop",
+    "version": "1.0.0",
+    "_postman_id": "tradeshop-backend-mvp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Juan Perez\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"secret123\",\n  \"userType\": \"tradesperson\",\n  \"phone\": \"+15551234567\",\n  \"location\": \"Dallas, TX\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"juan@example.com\",\n  \"password\": \"secret123\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/auth/login" }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Me (Get current user)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/api/auth/me" }
+      },
+      "response": []
+    },
+    {
+      "name": "Users - Get by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/users/:id", "variable": [{ "key": "id", "value": "<userId>" }] }
+      },
+      "response": []
+    },
+    {
+      "name": "Users - Update profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Juan Updated\",\n  \"phone\": \"+15559876543\",\n  \"location\": \"Frisco, TX\",\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/users/:id", "variable": [{ "key": "id", "value": "<userId>" }] }
+      },
+      "response": []
+    },
+    {
+      "name": "Professionals - List (with filters)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/professionals?trade=Electrician&location=Dallas&minScore=800&minRating=4.5&page=1&limit=20" }
+      },
+      "response": []
+    },
+    {
+      "name": "Professionals - Get by ID",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/professionals/:id", "variable": [{ "key": "id", "value": "<professionalId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Professionals - Update profile",
+      "request": {
+        "method": "PUT",
+        "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"trade\": \"Electrician\",\n  \"specialties\": [\"Residential\", \"Solar\"],\n  \"yearsExperience\": 10,\n  \"hourlyRate\": { \"min\": 60, \"max\": 120 },\n  \"availability\": \"Available\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/professionals/:id", "variable": [{ "key": "id", "value": "<professionalId>" }] }
+      },
+      "response": []
+    },
+    {
+      "name": "Professionals - Stats",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/professionals/:id/stats", "variable": [{ "key": "id", "value": "<professionalId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Projects - List",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/projects?status=new&tradeType=Electrical&city=Dallas" } },
+      "response": []
+    },
+    {
+      "name": "Projects - Get by ID",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/projects/:id", "variable": [{ "key": "id", "value": "<projectId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Projects - Create",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Renovation: Kitchen Recableado\",\n  \"description\": \"Complete rewiring of kitchen and adjacent rooms.\",\n  \"client\": \"<clientUserId>\",\n  \"location\": { \"city\": \"Dallas\", \"state\": \"TX\" },\n  \"budget\": \"8500\",\n  \"tradeTypes\": [\"Electrical\"],\n  \"timeline\": \"2 weeks\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/projects" }
+      },
+      "response": []
+    },
+    {
+      "name": "Projects - Update",
+      "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"status\": \"active\" }" }, "url": { "raw": "{{baseUrl}}/api/projects/:id", "variable": [{ "key": "id", "value": "<projectId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Projects - Submit Quote",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"professional\": \"<professionalId>\", \"amount\": 7500, \"timeline\": \"10 days\", \"materials\": [\"Wire\", \"Breakers\"], \"notes\": \"Can start next week\" }" }, "url": { "raw": "{{baseUrl}}/api/projects/:id/quotes", "variable": [{ "key": "id", "value": "<projectId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Projects - Accept Quote",
+      "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "url": { "raw": "{{baseUrl}}/api/projects/:id/quotes/:quoteId/accept", "variable": [{ "key": "id", "value": "<projectId>" }, { "key": "quoteId", "value": "<quoteId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Projects - Add Message",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"from\": \"<userId>\", \"message\": \"Hi, can you confirm timeline?\" }" }, "url": { "raw": "{{baseUrl}}/api/projects/:id/messages", "variable": [{ "key": "id", "value": "<projectId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Reviews - List",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/reviews?professionalId=<professionalId>" } },
+      "response": []
+    },
+    {
+      "name": "Reviews - Create",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"project\": \"<projectId>\", \"professional\": \"<professionalId>\", \"client\": \"<clientId>\", \"rating\": 5, \"detailedRatings\": { \"quality\": 5, \"timeliness\": 5 }, \"title\": \"Excellent job\", \"comment\": \"Completed ahead of schedule.\" }" }, "url": { "raw": "{{baseUrl}}/api/reviews" } },
+      "response": []
+    },
+    {
+      "name": "Reviews - Professional Response",
+      "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"text\": \"Thank you for the feedback!\" }" }, "url": { "raw": "{{baseUrl}}/api/reviews/:id/response", "variable": [{ "key": "id", "value": "<reviewId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Reviews - Mark Helpful",
+      "request": { "method": "PUT", "header": [], "url": { "raw": "{{baseUrl}}/api/reviews/:id/helpful", "variable": [{ "key": "id", "value": "<reviewId>" }] } },
+      "response": []
+    },
+    {
+      "name": "AI - Chat (BuildBot)",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{ \"message\": \"How many hours to rewire a 12x12 kitchen?\", \"userType\": \"tradesperson\" }" }, "url": { "raw": "{{baseUrl}}/api/ai/chat" } },
+      "response": []
+    },
+    {
+      "name": "AI - Analyze Project",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{ \"description\": \"Small residential bathroom remodel: remove tile, replace tub, re-plumb sink and shower.\", \"images\": [] }" }, "url": { "raw": "{{baseUrl}}/api/ai/analyze-project" } },
+      "response": []
+    },
+    {
+      "name": "AI - Save Analysis to Project",
+      "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"analysis\": { \"scope\": \"Replace fixtures, re-plumb\", \"timeline\": \"5-7 days\" } }" }, "url": { "raw": "{{baseUrl}}/api/ai/projects/:id/ai-analysis", "variable": [{ "key": "id", "value": "<projectId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Payments - Create Checkout Session",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"tier\": \"Journeyman\", \"userId\": \"<userId>\" }" }, "url": { "raw": "{{baseUrl}}/api/payments/create-checkout-session" } },
+      "response": []
+    },
+    {
+      "name": "Payments - Webhook (for Stripe)",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "<raw stripe event JSON>" }, "url": { "raw": "{{baseUrl}}/api/payments/webhook" } },
+      "response": []
+    },
+    {
+      "name": "Payments - Create Portal Session",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"userId\": \"<userId>\" }" }, "url": { "raw": "{{baseUrl}}/api/payments/create-portal-session" } },
+      "response": []
+    },
+    {
+      "name": "Payments - Subscription Status",
+      "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "url": { "raw": "{{baseUrl}}/api/payments/subscription-status/:userId", "variable": [{ "key": "userId", "value": "<userId>" }] } },
+      "response": []
+    },
+    {
+      "name": "Payments - Cancel Subscription",
+      "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ], "body": { "mode": "raw", "raw": "{ \"userId\": \"<userId>\" }" }, "url": { "raw": "{{baseUrl}}/api/payments/cancel-subscription" } },
+      "response": []
+    },
+    {
+      "name": "Payments - Plans",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/payments/plans" } },
+      "response": []
+    }
+  ]
+}

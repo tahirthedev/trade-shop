@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Your Subscription - Trade Shop</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .pricing-card.featured {
+            border: 4px solid #10b981;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.5rem 2rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .tier-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .tier-subtitle {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .price-container {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2563eb;
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .free-tag {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .features-list li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-button.primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .cta-button.primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .cta-button.secondary {
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .cta-button.secondary:hover {
+            background: #eff6ff;
+        }
+
+        .cta-button.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .cta-button.success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .cta-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .current-plan {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+
+        .comparison-table h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #1a202c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .check-mark {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .cross-mark {
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: white;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-button {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        .success-message {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .success-message h2 {
+            font-size: 2.5rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .success-message p {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index-english.html" class="back-button">← Back to Dashboard</a>
+        
+        <div class="header">
+            <h1>Choose Your Plan</h1>
+            <p>Grow your trade business with powerful AI tools</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Processing your subscription...</p>
+        </div>
+
+        <div id="pricing-section" class="pricing-grid">
+            <!-- Apprentice Tier -->
+            <div class="pricing-card">
+                <div class="tier-name">Apprentice</div>
+                <div class="tier-subtitle">Perfect for getting started</div>
+                <div class="price-container">
+                    <div class="free-tag">FREE</div>
+                </div>
+                <ul class="features-list">
+                    <li>Basic profile with 25 images</li>
+                    <li>Receive 5 project requests/month</li>
+                    <li>AI Trade Score (basic)</li>
+                    <li>Access to Trade Academy free courses</li>
+                    <li>Standard payment processing (3.5%)</li>
+                </ul>
+                <button class="cta-button secondary" disabled>Current Plan</button>
+            </div>
+
+            <!-- Journeyman Tier -->
+            <div class="pricing-card featured">
+                <div class="tier-name">Journeyman</div>
+                <div class="tier-subtitle">Most popular for growing businesses</div>
+                <div class="price-container">
+                    <span class="price">$49</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <ul class="features-list">
+                    <li>Everything in Apprentice</li>
+                    <li>Unlimited project requests</li>
+                    <li>Priority search placement</li>
+                    <li>BuildBot AI Assistant (100/month)</li>
+                    <li>Business Command Center</li>
+                    <li>AR Portfolio Builder</li>
+                    <li>Reduced fees (2.5%)</li>
+                    <li>Custom branded invoices</li>
+                </ul>
+                <button class="cta-button success" onclick="upgradeSubscription('Journeyman')">
+                    Upgrade to Journeyman
+                </button>
+            </div>
+
+            <!-- Master Tier -->
+            <div class="pricing-card">
+                <div class="tier-name">Master</div>
+                <div class="tier-subtitle">For established professionals</div>
+                <div class="price-container">
+                    <span class="price">$149</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <ul class="features-list">
+                    <li>Everything in Journeyman</li>
+                    <li>AI Quality Verification (unlimited)</li>
+                    <li>Fleet & Crew Management (10 crew)</li>
+                    <li>Supply Chain Intelligence</li>
+                    <li>Guaranteed 24hr response badge</li>
+                    <li>Video portfolio (4K)</li>
+                    <li>Dedicated account manager</li>
+                    <li>Lowest fees (1.9%)</li>
+                    <li>API access</li>
+                </ul>
+                <button class="cta-button primary" onclick="upgradeSubscription('Master')">
+                    Upgrade to Master
+                </button>
+            </div>
+        </div>
+
+        <!-- Feature Comparison Table -->
+        <div class="comparison-table">
+            <h2>Compare All Features</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Apprentice</th>
+                        <th>Journeyman</th>
+                        <th>Master</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monthly Cost</td>
+                        <td><strong>FREE</strong></td>
+                        <td><strong>$49</strong></td>
+                        <td><strong>$149</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Project Requests</td>
+                        <td>5/month</td>
+                        <td>Unlimited</td>
+                        <td>Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td>AI Trade Score</td>
+                        <td><span class="check-mark">✓</span> Basic</td>
+                        <td><span class="check-mark">✓</span> Advanced</td>
+                        <td><span class="check-mark">✓</span> Premium</td>
+                    </tr>
+                    <tr>
+                        <td>BuildBot AI Assistant</td>
+                        <td><span class="cross-mark">✗</span></td>
+                        <td>100 queries/month</td>
+                        <td>Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td>Priority Search Placement</td>
+                        <td><span class="cross-mark">✗</span></td>
+                        <td><span class="check-mark">✓</span></td>
+                        <td><span class="check-mark">✓✓</span> Top</td>
+                    </tr>
+                    <tr>
+                        <td>Business Command Center</td>
+                        <td><span class="cross-mark">✗</span></td>
+                        <td><span class="check-mark">✓</span></td>
+                        <td><span class="check-mark">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>AI Quality Verification</td>
+                        <td><span class="cross-mark">✗</span></td>
+                        <td>10/month</td>
+                        <td>Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td>Crew Management</td>
+                        <td><span class="cross-mark">✗</span></td>
+                        <td><span class="cross-mark">✗</span></td>
+                        <td>Up to 10 crew</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Processing Fees</td>
+                        <td>3.5%</td>
+                        <td>2.5%</td>
+                        <td>1.9%</td>
+                    </tr>
+                    <tr>
+                        <td>Support Level</td>
+                        <td>Community</td>
+                        <td>Priority Email</td>
+                        <td>Dedicated Manager</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY'); // Replace with your actual publishable key
+        const API_URL = 'http://localhost:5000/api'; // Replace with your backend URL
+
+        // Get user ID from localStorage or session
+        function getUserId() {
+            // Replace this with your actual user authentication logic
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            return user.id || user._id;
+        }
+
+        async function upgradeSubscription(tier) {
+            const userId = getUserId();
+            
+            if (!userId) {
+                alert('Please log in to upgrade your subscription');
+                window.location.href = 'index-english.html';
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('pricing-section').style.display = 'none';
+
+            try {
+                // Create checkout session
+                const response = await fetch(`${API_URL}/payments/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tier: tier,
+                        userId: userId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.message || 'Failed to create checkout session');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing subscription: ' + error.message);
+                
+                // Hide loading and show pricing again
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('pricing-section').style.display = 'grid';
+            }
+        }
+
+        // Check if we're returning from a successful payment
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            
+            if (sessionId) {
+                // Show success message
+                document.getElementById('pricing-section').innerHTML = `
+                    <div class="success-message">
+                        <h2>🎉 Subscription Activated!</h2>
+                        <p>Your subscription has been successfully upgraded. You now have access to all premium features!</p>
+                        <button class="cta-button success" onclick="window.location.href='index-english.html'">
+                            Go to Dashboard
+                        </button>
+                    </div>
+                `;
+            }
+        });
+
+        // Load current subscription status
+        async function loadSubscriptionStatus() {
+            const userId = getUserId();
+            if (!userId) return;
+
+            try {
+                const response = await fetch(`${API_URL}/payments/subscription-status/${userId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update UI to show current plan
+                    const cards = document.querySelectorAll('.pricing-card');
+                    cards.forEach(card => {
+                        const tierName = card.querySelector('.tier-name').textContent;
+                        const button = card.querySelector('.cta-button');
+                        
+                        if (tierName === data.tier) {
+                            button.textContent = 'Current Plan';
+                            button.classList.remove('success', 'primary');
+                            button.classList.add('secondary');
+                            button.disabled = true;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading subscription status:', error);
+            }
+        }
+
+        // Load status on page load
+        loadSubscriptionStatus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Shop - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .features {
+            list-style: none;
+        }
+
+        .features li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .features li::before {
+            content: "✓";
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .right-panel {
+            padding: 60px 40px;
+        }
+
+        .form-container h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #1a202c;
+        }
+
+        .form-container p {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            background: #efe;
+            color: #060;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 2px solid #2563eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">🔧 Trade Shop</div>
+            <div class="tagline">The Professional Trade Marketplace</div>
+            <ul class="features">
+                <li>Connect with quality tradespeople</li>
+                <li>AI-powered matching</li>
+                <li>Verified professionals</li>
+                <li>Secure payments</li>
+                <li>Project management tools</li>
+            </ul>
+        </div>
+
+        <div class="right-panel">
+            <div class="form-container">
+                <h2>Welcome!</h2>
+                <p>Sign in to continue to Trade Shop</p>
+
+                <!-- Demo Mode Notice -->
+                <div class="info-box" id="demo-notice">
+                    <strong>🎮 Demo Mode</strong>
+                    This is a demo version. In production, connect to your backend API by updating the API_URL in the code.
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('login')">Login</button>
+                    <button class="tab" onclick="switchTab('register')">Register</button>
+                </div>
+
+                <div id="error-message"></div>
+                <div id="success-message"></div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="form-section active">
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="login-email" required placeholder="you@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="login-password" required placeholder="••••••••">
+                        </div>
+
+                        <button type="submit" class="btn" id="login-btn">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="forgot-password">
+                        <a href="#" onclick="alert('Contact support to reset password: support@tradeshop.com')">Forgot password?</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="form-section">
+                    <form onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="register-name" required placeholder="John Smith">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="register-email" required placeholder="you@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="register-password" required placeholder="Min. 6 characters" minlength="6">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone (optional)</label>
+                            <input type="tel" class="form-input" id="register-phone" placeholder="(555) 123-4567">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">I am a...</label>
+                            <select class="form-select" id="register-type" required onchange="toggleTradeFields()">
+                                <option value="">Select type</option>
+                                <option value="client">Client (Looking for tradespeople)</option>
+                                <option value="tradesperson">Tradesperson (Offering services)</option>
+                            </select>
+                        </div>
+
+                        <!-- Show only for tradespeople -->
+                        <div id="trade-fields" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">Trade Type</label>
+                                <select class="form-select" id="register-trade">
+                                    <option value="Electrician">Electrician</option>
+                                    <option value="Plumber">Plumber</option>
+                                    <option value="HVAC">HVAC</option>
+                                    <option value="Carpenter">Carpenter</option>
+                                    <option value="Painter">Painter</option>
+                                    <option value="Landscaper">Landscaper</option>
+                                    <option value="Roofer">Roofer</option>
+                                    <option value="Mason">Mason</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Years of Experience</label>
+                                <input type="number" class="form-input" id="register-experience" min="0" max="50" placeholder="5">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Hourly Rate Range</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <input type="number" class="form-input" id="register-rate-min" min="0" placeholder="Min ($50)">
+                                    <input type="number" class="form-input" id="register-rate-max" min="0" placeholder="Max ($150)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn" id="register-btn">
+                            Create Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        
+        // Set this to your deployed backend URL
+        // For local development: 'http://localhost:5000/api'
+        // For production: 'https://your-backend-url.com/api'
+        const API_URL = 'http://localhost:5000/api';
+        
+        // Set to true to use demo mode (no backend required)
+        // Set to false when backend is available
+        const DEMO_MODE = false;
+        
+        // Redirect URL after successful login
+        const REDIRECT_URL = 'index-english.html'; // Change to your dashboard/main page
+
+        // ============================================
+        // DEMO MODE - SIMULATED BACKEND
+        // ============================================
+        
+        class DemoBackend {
+            constructor() {
+                // Initialize demo users in localStorage
+                if (!localStorage.getItem('demo_users')) {
+                    localStorage.setItem('demo_users', JSON.stringify([
+                        {
+                            id: '1',
+                            name: 'Demo Client',
+                            email: 'client@demo.com',
+                            password: 'demo123',
+                            userType: 'client',
+                            phone: '555-0100',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: '2',
+                            name: 'John Smith',
+                            email: 'tradesperson@demo.com',
+                            password: 'demo123',
+                            userType: 'tradesperson',
+                            phone: '555-0101',
+                            trade: 'Electrician',
+                            yearsExperience: 10,
+                            hourlyRate: { min: 75, max: 125 },
+                            createdAt: new Date().toISOString()
+                        }
+                    ]));
+                }
+            }
+
+            async login(email, password) {
+                // Simulate network delay
+                await this.delay(500);
+
+                const users = JSON.parse(localStorage.getItem('demo_users'));
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    const token = 'demo_token_' + Date.now();
+                    return {
+                        success: true,
+                        token: token,
+                        user: {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            userType: user.userType,
+                            trade: user.trade
+                        }
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: 'Invalid email or password'
+                    };
+                }
+            }
+
+            async register(userData) {
+                // Simulate network delay
+                await this.delay(500);
+
+                const users = JSON.parse(localStorage.getItem('demo_users'));
+                
+                // Check if email already exists
+                if (users.find(u => u.email === userData.email)) {
+                    return {
+                        success: false,
+                        message: 'Email already registered'
+                    };
+                }
+
+                // Create new user
+                const newUser = {
+                    id: Date.now().toString(),
+                    ...userData,
+                    createdAt: new Date().toISOString()
+                };
+
+                users.push(newUser);
+                localStorage.setItem('demo_users', JSON.stringify(users));
+
+                const token = 'demo_token_' + Date.now();
+                return {
+                    success: true,
+                    token: token,
+                    user: {
+                        id: newUser.id,
+                        name: newUser.name,
+                        email: newUser.email,
+                        userType: newUser.userType,
+                        trade: newUser.trade
+                    }
+                };
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        const demoBackend = new DemoBackend();
+
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update form sections
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.getElementById('register-form').classList.add('active');
+            }
+
+            clearMessages();
+        }
+
+        function toggleTradeFields() {
+            const userType = document.getElementById('register-type').value;
+            const tradeFields = document.getElementById('trade-fields');
+            
+            if (userType === 'tradesperson') {
+                tradeFields.style.display = 'block';
+                document.getElementById('register-trade').required = true;
+                document.getElementById('register-experience').required = true;
+            } else {
+                tradeFields.style.display = 'none';
+                document.getElementById('register-trade').required = false;
+                document.getElementById('register-experience').required = false;
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.innerHTML = `<div class="error">${message}</div>`;
+            setTimeout(() => {
+                errorDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.innerHTML = `<div class="success">${message}</div>`;
+        }
+
+        function clearMessages() {
+            document.getElementById('error-message').innerHTML = '';
+            document.getElementById('success-message').innerHTML = '';
+        }
+
+        // ============================================
+        // AUTHENTICATION FUNCTIONS
+        // ============================================
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>';
+            clearMessages();
+
+            try {
+                let data;
+                
+                if (DEMO_MODE) {
+                    // Use demo backend
+                    data = await demoBackend.login(email, password);
+                } else {
+                    // Use real backend
+                    const response = await fetch(`${API_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    data = await response.json();
+                }
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    showSuccess('Login successful! Redirecting...');
+                    
+                    setTimeout(() => {
+                        // Check if redirect page exists, otherwise go to demo dashboard
+                        window.location.href = REDIRECT_URL;
+                    }, 1000);
+                } else {
+                    showError(data.message || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                if (DEMO_MODE) {
+                    showError('Demo mode error: ' + error.message);
+                } else {
+                    showError('Connection error. Please check if the backend is running.');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const phone = document.getElementById('register-phone').value;
+            const userType = document.getElementById('register-type').value;
+            const btn = document.getElementById('register-btn');
+
+            const userData = {
+                name,
+                email,
+                password,
+                userType,
+                phone
+            };
+
+            // Add trade-specific fields if tradesperson
+            if (userType === 'tradesperson') {
+                userData.trade = document.getElementById('register-trade').value;
+                userData.yearsExperience = parseInt(document.getElementById('register-experience').value) || 0;
+                
+                const rateMin = document.getElementById('register-rate-min').value;
+                const rateMax = document.getElementById('register-rate-max').value;
+                
+                if (rateMin || rateMax) {
+                    userData.hourlyRate = {
+                        min: parseInt(rateMin) || 50,
+                        max: parseInt(rateMax) || 100
+                    };
+                }
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>';
+            clearMessages();
+
+            try {
+                let data;
+                
+                if (DEMO_MODE) {
+                    // Use demo backend
+                    data = await demoBackend.register(userData);
+                } else {
+                    // Use real backend
+                    const response = await fetch(`${API_URL}/auth/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(userData)
+                    });
+                    data = await response.json();
+                }
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    showSuccess('Registration successful! Redirecting...');
+                    
+                    setTimeout(() => {
+                        window.location.href = REDIRECT_URL;
+                    }, 1000);
+                } else {
+                    showError(data.message || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                if (DEMO_MODE) {
+                    showError('Demo mode error: ' + error.message);
+                } else {
+                    showError('Connection error. Please check if the backend is running.');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account';
+            }
+        }
+
+        // ============================================
+        // PAGE INITIALIZATION
+        // ============================================
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check if already logged in
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Uncomment to auto-redirect if already logged in
+                // window.location.href = REDIRECT_URL;
+            }
+
+            // Show/hide demo notice
+            if (!DEMO_MODE) {
+                document.getElementById('demo-notice').style.display = 'none';
+            }
+
+            // Log demo credentials to console
+            if (DEMO_MODE) {
+                console.log('=================================');
+                console.log('DEMO MODE ACTIVE');
+                console.log('=================================');
+                console.log('Demo Credentials:');
+                console.log('Client:');
+                console.log('  Email: client@demo.com');
+                console.log('  Password: demo123');
+                console.log('');
+                console.log('Tradesperson:');
+                console.log('  Email: tradesperson@demo.com');
+                console.log('  Password: demo123');
+                console.log('=================================');
+            }
+        });
+    </script>
+</body>
+</html>
