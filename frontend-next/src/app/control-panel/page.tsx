@@ -457,10 +457,10 @@ export default function DashboardPage() {
               >
                 <Card className="hover:shadow-xl transition-all duration-300 h-full flex flex-col relative">
                   {/* New Proposals Notification Badge */}
-                  {project.proposalCount > 0 && (
+                  {(project.proposalCount ?? 0) > 0 && (
                     <div className="absolute -top-2 -right-2 z-10">
                       <div className="bg-purple-600 text-white text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center shadow-lg animate-pulse">
-                        {project.proposalCount}
+                        {project.proposalCount ?? 0}
                       </div>
                     </div>
                   )}
