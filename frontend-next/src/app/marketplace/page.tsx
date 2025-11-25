@@ -23,6 +23,9 @@ export default function MarketplacePage() {
   const [maxRate, setMaxRate] = useState('');
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [showPostJobWizard, setShowPostJobWizard] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -37,15 +40,18 @@ export default function MarketplacePage() {
 
   useEffect(() => {
     loadProfessionals();
-  }, []);
+  }, [currentPage]);
 
   const loadProfessionals = async () => {
     try {
       setLoading(true);
       setError('');
       
-      const filters: any = {};
-      if (selectedProfession) filters.profession = selectedProfession;
+      const filters: any = {
+        page: currentPage,
+        limit: 9
+      };
+      if (selectedProfession) filters.trade = selectedProfession;
       if (minRate) filters.minRate = parseFloat(minRate);
       if (maxRate) filters.maxRate = parseFloat(maxRate);
       if (searchTerm) filters.search = searchTerm;
@@ -54,6 +60,8 @@ export default function MarketplacePage() {
       
       if (response.success) {
         setProfessionals(response.professionals);
+        setTotalPages(response.totalPages);
+        setTotalResults(response.total);
       } else {
         setError('Error al cargar profesionales');
       }
@@ -66,6 +74,7 @@ export default function MarketplacePage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setCurrentPage(1);
     loadProfessionals();
   };
 
@@ -78,7 +87,13 @@ export default function MarketplacePage() {
     setSelectedProfession('');
     setMinRate('');
     setMaxRate('');
+    setCurrentPage(1);
     setTimeout(loadProfessionals, 0);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -175,9 +190,16 @@ export default function MarketplacePage() {
           </div>
         ) : (
           <>
-            <p className="text-gray-600 mb-6">
-              {professionals.length} profesional{professionals.length !== 1 ? 'es' : ''} encontrado{professionals.length !== 1 ? 's' : ''}
-            </p>
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-gray-600">
+                {totalResults} profesional{totalResults !== 1 ? 'es' : ''} encontrado{totalResults !== 1 ? 's' : ''}
+              </p>
+              {totalPages > 1 && (
+                <p className="text-gray-600">
+                  Página {currentPage} de {totalPages}
+                </p>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {professionals.map((professional) => (
                 <ProfessionalCard
@@ -187,6 +209,40 @@ export default function MarketplacePage() {
                 />
               ))}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center items-center gap-2">
+                <Button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  variant="secondary"
+                >
+                  Previous
+                </Button>
+                
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      variant={currentPage === page ? 'primary' : 'ghost'}
+                      className={currentPage === page ? '' : 'hover:bg-gray-100'}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+
+                <Button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  variant="secondary"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </>
         )}
       </div>
