@@ -119,6 +119,13 @@ export interface Project {
   status: 'new' | 'active' | 'completed' | 'cancelled';
   progress?: number;
   proposalCount?: number;
+  aiAnalysis?: {
+    complexityScore?: number;
+    urgencyLevel?: string;
+    estimatedDuration?: string;
+    suggestedTrades?: string[];
+    keyRequirements?: string[];
+  };
   createdAt: string;
   updatedAt: string;
 }
