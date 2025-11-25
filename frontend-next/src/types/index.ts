@@ -125,6 +125,8 @@ export interface Project {
     estimatedDuration?: string;
     suggestedTrades?: string[];
     keyRequirements?: string[];
+    riskLevel?: 'low' | 'medium' | 'high';
+    budgetAssessment?: string;
   };
   createdAt: string;
   updatedAt: string;
