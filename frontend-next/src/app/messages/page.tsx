@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Send, Paperclip, ArrowLeft, Users, Clock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/Card';
 import { Spinner } from '@/components/ui/Spinner';
 import type { Conversation, Message, User } from '@/types';
 
-export default function MessagesPage() {
+function MessagesContent() {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -324,5 +324,13 @@ export default function MessagesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Spinner /></div>}>
+      <MessagesContent />
+    </Suspense>
   );
 }

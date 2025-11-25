@@ -730,7 +730,7 @@ export default function DashboardPage() {
             )}
 
             {/* View Proposals */}
-            {user.userType === 'client' && selectedProject.proposalCount > 0 && !expandedProjects.has(selectedProject._id) && (
+            {user.userType === 'client' && (selectedProject.proposalCount ?? 0) > 0 && !expandedProjects.has(selectedProject._id) && (
               <div className="pt-4 border-t border-gray-200">
                 <Button
                   variant="secondary"
@@ -741,7 +741,7 @@ export default function DashboardPage() {
                   className="w-full"
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  View {selectedProject.proposalCount} Proposal{selectedProject.proposalCount !== 1 ? 's' : ''}
+                  View {selectedProject.proposalCount ?? 0} Proposal{(selectedProject.proposalCount ?? 0) !== 1 ? 's' : ''}
                 </Button>
               </div>
             )}

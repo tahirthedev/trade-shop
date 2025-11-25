@@ -19,7 +19,7 @@ export function Card({ children, className, ...props }: CardProps) {
         'bg-white rounded-xl shadow-md p-6 transition-shadow hover:shadow-xl border border-gray-100',
         className
       )}
-      {...props}
+      {...(props as any)}
     >
       {children}
     </motion.div>

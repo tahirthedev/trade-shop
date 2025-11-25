@@ -123,10 +123,12 @@ export interface Project {
     complexityScore?: number;
     urgencyLevel?: string;
     estimatedDuration?: string;
+    estimatedTimeline?: string;
     suggestedTrades?: string[];
     keyRequirements?: string[];
     riskLevel?: 'low' | 'medium' | 'high';
     budgetAssessment?: string;
+    summary?: string;
   };
   createdAt: string;
   updatedAt: string;
