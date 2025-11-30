@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Spinner } from '@/components/ui/Spinner';
+import { useTranslation } from '@/context/LanguageContext';
 import type { Proposal, User, Professional } from '@/types';
 
 interface ProposalListProps {
@@ -18,6 +19,7 @@ interface ProposalListProps {
 }
 
 export function ProposalList({ proposals, onProposalUpdated, userType }: ProposalListProps) {
+  const { t } = useTranslation();
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -92,10 +94,10 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
     };
 
     const labels: Record<string, string> = {
-      pending: 'Pending',
-      accepted: 'Accepted',
-      rejected: 'Rejected',
-      withdrawn: 'Withdrawn',
+      pending: t('proposals.pending'),
+      accepted: t('proposals.accepted'),
+      rejected: t('proposals.rejected'),
+      withdrawn: t('proposals.withdrawn'),
     };
 
     return <Badge variant={variants[status] || 'default'}>{labels[status] || status}</Badge>;
@@ -125,11 +127,11 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
       {proposals.length === 0 ? (
         <Card className="text-center py-12">
           <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No proposals yet</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('proposals.noProposals')}</h3>
           <p className="text-gray-600">
             {userType === 'client' 
-              ? 'Proposals from professionals will appear here' 
-              : 'Your submitted proposals will appear here'}
+              ? t('proposals.noProposalsClient')
+              : t('proposals.noProposalsPro')}
           </p>
         </Card>
       ) : (
@@ -180,7 +182,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
 
                 <div className="flex flex-col gap-2">
                   <Button onClick={() => viewProposalDetails(proposal)} variant="secondary">
-                    View Details
+                    {t('proposals.viewDetails')}
                   </Button>
                   
                   {userType === 'client' && proposal.status === 'pending' && (
@@ -191,7 +193,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                         className="bg-green-600 hover:bg-green-700"
                       >
                         <Check className="w-4 h-4 mr-1" />
-                        Accept
+                        {t('proposals.accept')}
                       </Button>
                       <Button
                         onClick={() => handleRejectProposal(proposal._id)}
@@ -199,7 +201,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                         variant="danger"
                       >
                         <X className="w-4 h-4 mr-1" />
-                        Reject
+                        {t('proposals.reject')}
                       </Button>
                     </>
                   )}
@@ -210,7 +212,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                       disabled={actionLoading}
                       variant="secondary"
                     >
-                      Withdraw
+                      {t('proposals.withdraw')}
                     </Button>
                   )}
                 </div>
@@ -228,12 +230,12 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
             setShowDetailsModal(false);
             setSelectedProposal(null);
           }}
-          title="Proposal Details"
+          title={t('proposals.proposalDetails')}
         >
           <div className="space-y-6">
             {/* Professional Info */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Professional</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.professional')}</h3>
               <div className="flex items-center gap-3">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-xl">
@@ -251,28 +253,28 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
 
             {/* Budget */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Proposed Budget</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.proposedBudget')}</h3>
               <div className="text-3xl font-bold text-green-600">${selectedProposal.budget}</div>
             </div>
 
             {/* Timeline */}
             {selectedProposal.timeline && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Timeline</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.timeline')}</h3>
                 {selectedProposal.timeline.estimatedDuration && (
                   <p className="text-gray-700">
-                    Duration: {selectedProposal.timeline.estimatedDuration.value}{' '}
+                    {t('proposals.duration')}: {selectedProposal.timeline.estimatedDuration.value}{' '}
                     {selectedProposal.timeline.estimatedDuration.unit}
                   </p>
                 )}
                 {selectedProposal.timeline.startDate && (
                   <p className="text-gray-700">
-                    Start Date: {new Date(selectedProposal.timeline.startDate).toLocaleDateString()}
+                    {t('proposals.startDate')}: {new Date(selectedProposal.timeline.startDate).toLocaleDateString()}
                   </p>
                 )}
                 {selectedProposal.timeline.completionDate && (
                   <p className="text-gray-700">
-                    Completion: {new Date(selectedProposal.timeline.completionDate).toLocaleDateString()}
+                    {t('proposals.completion')}: {new Date(selectedProposal.timeline.completionDate).toLocaleDateString()}
                   </p>
                 )}
               </div>
@@ -280,14 +282,14 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
 
             {/* Cover Letter */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Cover Letter</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.coverLetter')}</h3>
               <p className="text-gray-700 whitespace-pre-wrap">{selectedProposal.coverLetter}</p>
             </div>
 
             {/* Scope */}
             {selectedProposal.scope && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Scope of Work</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.scopeOfWork')}</h3>
                 <p className="text-gray-700 whitespace-pre-wrap">{selectedProposal.scope}</p>
               </div>
             )}
@@ -295,7 +297,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
             {/* Milestones */}
             {selectedProposal.milestones && selectedProposal.milestones.length > 0 && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Milestones</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.milestones')}</h3>
                 <div className="space-y-3">
                   {selectedProposal.milestones.map((milestone, index) => (
                     <div key={index} className="border-l-4 border-blue-600 pl-4">
@@ -304,7 +306,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
                         <span>${milestone.amount}</span>
                         {milestone.dueDate && (
-                          <span>Due: {new Date(milestone.dueDate).toLocaleDateString()}</span>
+                          <span>{t('proposals.due')}: {new Date(milestone.dueDate).toLocaleDateString()}</span>
                         )}
                       </div>
                     </div>
@@ -315,13 +317,13 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
 
             {/* Status */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Status</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('proposals.status')}</h3>
               {getStatusBadge(selectedProposal.status)}
               {selectedProposal.rejectionReason && (
                 <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-800">
                     <AlertCircle className="w-4 h-4 inline mr-1" />
-                    Rejection Reason: {selectedProposal.rejectionReason}
+                    {t('proposals.rejectionReason')}: {selectedProposal.rejectionReason}
                   </p>
                 </div>
               )}
@@ -337,7 +339,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                       disabled={actionLoading}
                       className="flex-1 bg-green-600 hover:bg-green-700"
                     >
-                      {actionLoading ? <Spinner size="sm" /> : <><Check className="w-4 h-4 mr-1" /> Accept</>}
+                      {actionLoading ? <Spinner size="sm" /> : <><Check className="w-4 h-4 mr-1" /> {t('proposals.accept')}</>}
                     </Button>
                     <Button
                       onClick={() => handleRejectProposal(selectedProposal._id)}
@@ -345,7 +347,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                       variant="danger"
                       className="flex-1"
                     >
-                      {actionLoading ? <Spinner size="sm" /> : <><X className="w-4 h-4 mr-1" /> Reject</>}
+                      {actionLoading ? <Spinner size="sm" /> : <><X className="w-4 h-4 mr-1" /> {t('proposals.reject')}</>}
                     </Button>
                   </>
                 ) : (
@@ -355,7 +357,7 @@ export function ProposalList({ proposals, onProposalUpdated, userType }: Proposa
                     variant="secondary"
                     className="w-full"
                   >
-                    {actionLoading ? <Spinner size="sm" /> : 'Withdraw Proposal'}
+                    {actionLoading ? <Spinner size="sm" /> : t('proposals.withdrawProposal')}
                   </Button>
                 )}
               </div>

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import { aiApi } from '@/lib/api/ai';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
@@ -17,25 +18,15 @@ interface AIAssistantProps {
   onClose?: () => void;
 }
 
-// Detect user's browser language
-const detectLanguage = (): 'en' | 'es' => {
-  const browserLang = navigator.language.toLowerCase();
-  return browserLang.startsWith('es') ? 'es' : 'en';
-};
-
-const getInitialMessage = (lang: 'en' | 'es') => {
-  return lang === 'es'
-    ? '¡Hola! Soy BuildBot, tu asistente de IA. Puedo ayudarte con estimaciones de proyectos, cálculos de materiales, programación y más. ¿En qué puedo ayudarte hoy?'
-    : 'Hi! I\'m BuildBot, your AI assistant. I can help you with project estimates, material calculations, scheduling and more. How can I help you today?';
-};
-
 export function AIAssistant({ onClose }: AIAssistantProps = {}) {
   const { user } = useAuth();
-  const [userLang] = useState<'en' | 'es'>(detectLanguage());
+  const { t, language } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: getInitialMessage(userLang),
+      content: language === 'es'
+        ? '¡Hola! Soy BuildBot, tu asistente de IA. Puedo ayudarte con estimaciones de proyectos, cálculos de materiales, programación y más. ¿En qué puedo ayudarte hoy?'
+        : 'Hi! I\'m BuildBot, your AI assistant. I can help you with project estimates, material calculations, scheduling and more. How can I help you today?',
     },
   ]);
   const [input, setInput] = useState('');
@@ -61,7 +52,7 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
     try {
       const history = messages.map(m => ({ role: m.role, content: m.content }));
       // Include language preference in the request
-      const enhancedInput = userLang === 'es' 
+      const enhancedInput = language === 'es' 
         ? `[Responde en español] ${input}` 
         : input;
       
@@ -73,7 +64,7 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
           { role: 'assistant', content: response.message },
         ]);
       } else {
-        const errorMsg = userLang === 'es'
+        const errorMsg = language === 'es'
           ? 'Lo siento, hubo un error al procesar tu mensaje. Por favor intenta de nuevo.'
           : 'Sorry, there was an error processing your message. Please try again.';
         setMessages((prev) => [
@@ -82,7 +73,7 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
         ]);
       }
     } catch (error) {
-      const errorMsg = userLang === 'es'
+      const errorMsg = language === 'es'
         ? 'Lo siento, ocurrió un error. Por favor intenta de nuevo más tarde.'
         : 'Sorry, an error occurred. Please try again later.';
       setMessages((prev) => [
@@ -101,10 +92,6 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
     }
   };
 
-  const placeholder = userLang === 'es' 
-    ? 'Pregúntale cualquier cosa a BuildBot...' 
-    : 'Ask BuildBot anything...';
-
   return (
     <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border-2 border-purple-100">
       {/* Header */}
@@ -114,10 +101,10 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
         </div>
         <div>
           <h3 className="text-xl font-bold text-blue-600">
-            {userLang === 'es' ? 'Asistente IA BuildBot' : 'AI Assistant BuildBot'}
+            {t('ai.assistantTitle')}
           </h3>
           <p className="text-sm text-purple-600">
-            {userLang === 'es' ? 'Tu experto en oficios 24/7' : 'Your 24/7 trades expert'}
+            {t('ai.assistantSubtitle')}
           </p>
         </div>
       </div>
@@ -166,7 +153,7 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder={placeholder}
+          placeholder={t('ai.askPlaceholder')}
           className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
           disabled={loading}
         />
@@ -175,7 +162,7 @@ export function AIAssistant({ onClose }: AIAssistantProps = {}) {
           disabled={loading || !input.trim()}
           className="px-6 bg-blue-600 hover:bg-blue-700"
         >
-          {userLang === 'es' ? 'Enviar' : 'Send'}
+          {t('common.send')}
         </Button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import { authApi } from '@/lib/api/auth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -12,6 +13,7 @@ import type { LoginFormData, RegisterFormData } from '@/types';
 import { Check, Wrench } from 'lucide-react';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -102,7 +104,7 @@ export default function LoginPage() {
               <Wrench className="w-10 h-10" />
               <h1 className="text-4xl font-bold">Trade Shop</h1>
             </div>
-            <p className="text-xl text-blue-100 mb-8">The Professional Trade Marketplace</p>
+            <p className="text-xl text-blue-100 mb-8">{t('login.branding.tagline')}</p>
           </div>
 
           <div className="space-y-4">
@@ -110,31 +112,31 @@ export default function LoginPage() {
               <div className="bg-white/20 rounded-full p-1">
                 <Check className="w-5 h-5" />
               </div>
-              <span className="text-lg">Connect with quality tradespeople</span>
+              <span className="text-lg">{t('login.branding.features.connect')}</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-white/20 rounded-full p-1">
                 <Check className="w-5 h-5" />
               </div>
-              <span className="text-lg">AI-powered matching</span>
+              <span className="text-lg">{t('login.branding.features.ai')}</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-white/20 rounded-full p-1">
                 <Check className="w-5 h-5" />
               </div>
-              <span className="text-lg">Verified professionals</span>
+              <span className="text-lg">{t('login.branding.features.verified')}</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-white/20 rounded-full p-1">
                 <Check className="w-5 h-5" />
               </div>
-              <span className="text-lg">Secure payments</span>
+              <span className="text-lg">{t('login.branding.features.payments')}</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-white/20 rounded-full p-1">
                 <Check className="w-5 h-5" />
               </div>
-              <span className="text-lg">Project management tools</span>
+              <span className="text-lg">{t('login.branding.features.tools')}</span>
             </div>
           </div>
         </div>
@@ -143,8 +145,8 @@ export default function LoginPage() {
         <div className="flex-1 p-8 lg:p-12">
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome!</h2>
-              <p className="text-gray-600">Sign in to continue to Trade Shop</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('login.welcome')}</h2>
+              <p className="text-gray-600">{t('login.subtitle')}</p>
             </div>
 
             {/* Tabs */}
@@ -157,7 +159,7 @@ export default function LoginPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Login
+                {t('login.tabs.login')}
               </button>
               <button
                 onClick={() => setActiveTab('register')}
@@ -167,7 +169,7 @@ export default function LoginPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Register
+                {t('login.tabs.register')}
               </button>
             </div>
 
@@ -181,14 +183,14 @@ export default function LoginPage() {
               <form onSubmit={handleLoginSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
+                    {t('login.form.email')}
                   </label>
                   <input
                     type="email"
                     value={loginForm.email}
                     onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900"
-                    placeholder="your@email.com"
+                    placeholder={t('login.form.emailPlaceholder')}
                     required
                     disabled={loading}
                   />
@@ -196,7 +198,7 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
+                    {t('login.form.password')}
                   </label>
                   <input
                     type="password"
@@ -214,12 +216,12 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? <Spinner size="sm" /> : 'Sign In'}
+                  {loading ? <Spinner size="sm" /> : t('login.form.signIn')}
                 </button>
 
                 <div className="text-center">
                   <a href="#" className="text-sm text-blue-600 hover:text-blue-700">
-                    Forgot password?
+                    {t('login.form.forgotPassword')}
                   </a>
                 </div>
               </form>
@@ -227,14 +229,14 @@ export default function LoginPage() {
               <form onSubmit={handleRegisterSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
+                    {t('login.form.fullName')}
                   </label>
                   <input
                     type="text"
                     value={registerForm.name}
                     onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                    placeholder="John Doe"
+                    placeholder={t('login.form.namePlaceholder')}
                     required
                     disabled={loading}
                   />
@@ -242,14 +244,14 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
+                    {t('login.form.email')}
                   </label>
                   <input
                     type="email"
                     value={registerForm.email}
                     onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                    placeholder="your@email.com"
+                    placeholder={t('login.form.emailPlaceholder')}
                     required
                     disabled={loading}
                   />
@@ -257,7 +259,7 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
+                    {t('login.form.password')}
                   </label>
                   <input
                     type="password"
@@ -272,7 +274,7 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone (optional)
+                    {t('login.form.phone')}
                   </label>
                   <input
                     type="tel"
@@ -286,7 +288,7 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    I am a...
+                    {t('login.form.iAm')}
                   </label>
                   <select
                     value={registerForm.userType}
@@ -299,8 +301,8 @@ export default function LoginPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     disabled={loading}
                   >
-                    <option value="client">Client (Looking for tradespeople)</option>
-                    <option value="tradesperson">Tradesperson (Offering services)</option>
+                    <option value="client">{t('login.form.client')}</option>
+                    <option value="tradesperson">{t('login.form.tradesperson')}</option>
                   </select>
                 </div>
 
@@ -308,7 +310,7 @@ export default function LoginPage() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Trade Type
+                        {t('login.form.tradeType')}
                       </label>
                       <select
                         value={registerForm.trade || ''}
@@ -317,21 +319,21 @@ export default function LoginPage() {
                         required
                         disabled={loading}
                       >
-                        <option value="">Select your trade</option>
-                        <option value="Electrician">Electrician</option>
-                        <option value="Plumber">Plumber</option>
-                        <option value="HVAC">HVAC</option>
-                        <option value="Carpenter">Carpenter</option>
-                        <option value="Painter">Painter</option>
-                        <option value="Mason">Mason</option>
-                        <option value="Roofer">Roofer</option>
-                        <option value="General Contractor">General Contractor</option>
+                        <option value="">{t('login.form.selectTrade')}</option>
+                        <option value="Electrician">{t('common.trades.electrician')}</option>
+                        <option value="Plumber">{t('common.trades.plumber')}</option>
+                        <option value="HVAC">{t('common.trades.hvac')}</option>
+                        <option value="Carpenter">{t('common.trades.carpenter')}</option>
+                        <option value="Painter">{t('common.trades.painter')}</option>
+                        <option value="Mason">{t('common.trades.mason')}</option>
+                        <option value="Roofer">{t('common.trades.roofer')}</option>
+                        <option value="General Contractor">{t('common.trades.generalContractor')}</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Years of Experience
+                        {t('login.form.yearsExperience')}
                       </label>
                       <input
                         type="number"
@@ -349,7 +351,7 @@ export default function LoginPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Hourly Rate Range
+                        {t('login.form.hourlyRate')}
                       </label>
                       <div className="grid grid-cols-2 gap-4">
                         <input
@@ -362,7 +364,7 @@ export default function LoginPage() {
                             })
                           }
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                          placeholder="Min ($50)"
+                          placeholder={t('login.form.minRate')}
                           min="0"
                           required
                           disabled={loading}
@@ -377,7 +379,7 @@ export default function LoginPage() {
                             })
                           }
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                          placeholder="Max ($150)"
+                          placeholder={t('login.form.maxRate')}
                           min="0"
                           required
                           disabled={loading}
@@ -392,7 +394,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? <Spinner size="sm" /> : 'Create Account'}
+                  {loading ? <Spinner size="sm" /> : t('login.form.createAccount')}
                 </button>
               </form>
             )}

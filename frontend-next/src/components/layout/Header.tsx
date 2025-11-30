@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { messagesApi } from '@/lib/api/messages';
 import { Button } from '@/components/ui/Button';
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { language, toggleLanguage, t } = useLanguage();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -43,19 +45,19 @@ export function Header() {
           {/* Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <Link href="/marketplace" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-              Find Professionals
+              {t('nav.marketplace')}
             </Link>
             <Link href="/subscription" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-              Pricing
+              {t('nav.subscription')}
             </Link>
             
             {user ? (
               <>
                 <Link href="/control-panel" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                  Control Panel
+                  {t('nav.controlPanel')}
                 </Link>
                 <Link href="/messages" className="text-gray-700 hover:text-blue-600 font-medium transition-colors relative">
-                  Messages
+                  {t('nav.messages')}
                   {unreadCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {unreadCount > 9 ? '9+' : unreadCount}
@@ -65,31 +67,68 @@ export function Header() {
                 {user.userType === 'tradesperson' && (
                   <>
                     <Link href="/jobs" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                      Jobs
+                      {t('nav.jobs')}
                     </Link>
                     <Link href="/profile" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                      My Profile
+                      {t('nav.profile')}
                     </Link>
                   </>
                 )}
                 <Button variant="secondary" size="sm" onClick={logout}>
-                  Logout
+                  {t('nav.logout')}
                 </Button>
               </>
             ) : (
               <>
                 <Link href="/login">
                   <Button variant="secondary" size="sm">
-                    Login
+                    {t('nav.login')}
                   </Button>
                 </Link>
                 <Link href="/login">
                   <Button variant="primary" size="sm">
-                    Get Started
+                    {t('home.getStarted')}
                   </Button>
                 </Link>
               </>
             )}
+
+            {/* Language Toggle */}
+            <button
+              onClick={toggleLanguage}
+              className="relative flex items-center w-[72px] h-9 bg-blue-100 border border-blue-200 rounded-full cursor-pointer hover:bg-blue-200 transition-colors duration-200"
+              title={language === 'en' ? 'Cambiar a Español' : 'Switch to English'}
+              aria-label="Toggle language"
+            >
+              {/* Background labels */}
+              <span className="absolute left-2.5 text-xs font-bold text-blue-400">EN</span>
+              <span className="absolute right-2.5 text-xs font-bold text-blue-400">ES</span>
+              {/* Sliding indicator */}
+              <span 
+                className="absolute w-8 h-7 bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-xs font-bold transition-all duration-500 ease-[cubic-bezier(0.68,-0.15,0.32,1.15)]"
+                style={{ left: language === 'en' ? '2px' : '34px' }}
+              >
+                {language === 'en' ? 'EN' : 'ES'}
+              </span>
+            </button>
+          </div>
+
+          {/* Mobile: Language Toggle + Menu */}
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={toggleLanguage}
+              className="relative flex items-center w-16 h-8 bg-blue-100 border border-blue-200 rounded-full cursor-pointer"
+              aria-label="Toggle language"
+            >
+              <span className="absolute left-2 text-[10px] font-bold text-blue-400">EN</span>
+              <span className="absolute right-2 text-[10px] font-bold text-blue-400">ES</span>
+              <span 
+                className="absolute w-7 h-6 bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-[10px] font-bold transition-all duration-500 ease-[cubic-bezier(0.68,-0.15,0.32,1.15)]"
+                style={{ left: language === 'en' ? '2px' : '30px' }}
+              >
+                {language === 'en' ? 'EN' : 'ES'}
+              </span>
+            </button>
           </div>
         </div>
       </div>

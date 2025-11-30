@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { Modal } from '@/components/ui/Modal';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import type { Professional } from '@/types';
 
 export default function MarketplacePage() {
+  const { t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,12 +32,12 @@ export default function MarketplacePage() {
   const { user } = useAuth();
 
   const professionOptions = [
-    'Electricista',
-    'Plomero',
-    'HVAC',
-    'Carpintero',
-    'Pintor',
-    'Albañil',
+    { value: 'Electrician', label: t('common.trades.electrician') },
+    { value: 'Plumber', label: t('common.trades.plumber') },
+    { value: 'HVAC', label: t('common.trades.hvac') },
+    { value: 'Carpenter', label: t('common.trades.carpenter') },
+    { value: 'Painter', label: t('common.trades.painter') },
+    { value: 'Mason', label: t('common.trades.mason') },
   ];
 
   useEffect(() => {
@@ -63,10 +65,10 @@ export default function MarketplacePage() {
         setTotalPages(response.totalPages);
         setTotalResults(response.total);
       } else {
-        setError('Error al cargar profesionales');
+        setError(t('errors.loadProfessionals'));
       }
     } catch (err: any) {
-      setError(err.message || 'Error al cargar profesionales');
+      setError(err.message || t('errors.loadProfessionals'));
     } finally {
       setLoading(false);
     }
@@ -101,13 +103,13 @@ export default function MarketplacePage() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-gray-900">
-            Encuentra Profesionales
+            {t('marketplace.title')}
           </h1>
           
           {user && (
             <Button onClick={() => setShowPostJobWizard(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              Post a Job
+              {t('marketplace.postJob')}
             </Button>
           )}
         </div>
@@ -117,43 +119,43 @@ export default function MarketplacePage() {
           <form onSubmit={handleSearch}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <Input
-                label="Buscar"
+                label={t('marketplace.filters.search')}
                 type="text"
-                placeholder="Nombre o palabra clave..."
+                placeholder={t('marketplace.filters.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Profesión
+                  {t('marketplace.filters.profession')}
                 </label>
                 <select
                   value={selectedProfession}
                   onChange={(e) => setSelectedProfession(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
                 >
-                  <option value="">Todas las profesiones</option>
+                  <option value="">{t('marketplace.filters.allProfessions')}</option>
                   {professionOptions.map((prof) => (
-                    <option key={prof} value={prof}>
-                      {prof}
+                    <option key={prof.value} value={prof.value}>
+                      {prof.label}
                     </option>
                   ))}
                 </select>
               </div>
 
               <Input
-                label="Tarifa mínima"
+                label={t('marketplace.filters.minRate')}
                 type="number"
-                placeholder="$/hora"
+                placeholder={t('marketplace.filters.ratePlaceholder')}
                 value={minRate}
                 onChange={(e) => setMinRate(e.target.value)}
               />
 
               <Input
-                label="Tarifa máxima"
+                label={t('marketplace.filters.maxRate')}
                 type="number"
-                placeholder="$/hora"
+                placeholder={t('marketplace.filters.ratePlaceholder')}
                 value={maxRate}
                 onChange={(e) => setMaxRate(e.target.value)}
               />
@@ -161,10 +163,10 @@ export default function MarketplacePage() {
 
             <div className="flex gap-2">
               <Button type="submit">
-                Buscar
+                {t('marketplace.filters.searchBtn')}
               </Button>
               <Button type="button" variant="ghost" onClick={handleClearFilters}>
-                Limpiar Filtros
+                {t('marketplace.filters.clearFilters')}
               </Button>
             </div>
           </form>
@@ -182,21 +184,21 @@ export default function MarketplacePage() {
         ) : professionals.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-600 text-lg mb-4">
-              No se encontraron profesionales con los filtros seleccionados
+              {t('marketplace.noResults')}
             </p>
             <Button onClick={handleClearFilters}>
-              Limpiar Filtros
+              {t('marketplace.filters.clearFilters')}
             </Button>
           </div>
         ) : (
           <>
             <div className="flex justify-between items-center mb-6">
               <p className="text-gray-600">
-                {totalResults} profesional{totalResults !== 1 ? 'es' : ''} encontrado{totalResults !== 1 ? 's' : ''}
+                {totalResults} {t('marketplace.professionalsFound')}
               </p>
               {totalPages > 1 && (
                 <p className="text-gray-600">
-                  Página {currentPage} de {totalPages}
+                  {t('common.page')} {currentPage} {t('common.of')} {totalPages}
                 </p>
               )}
             </div>
@@ -218,7 +220,7 @@ export default function MarketplacePage() {
                   disabled={currentPage === 1}
                   variant="secondary"
                 >
-                  Previous
+                  {t('common.previous')}
                 </Button>
                 
                 <div className="flex gap-1">
@@ -239,7 +241,7 @@ export default function MarketplacePage() {
                   disabled={currentPage === totalPages}
                   variant="secondary"
                 >
-                  Next
+                  {t('common.next')}
                 </Button>
               </div>
             )}
@@ -254,37 +256,36 @@ export default function MarketplacePage() {
           <Modal
             isOpen={true}
             onClose={() => setSelectedProfessional(null)}
-            title={`Contactar a ${user?.name || 'Profesional'}`}
+            title={`${t('marketplace.contact.title')} ${user?.name || t('marketplace.contact.professional')}`}
           >
             <div className="space-y-4">
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Profesión</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">{t('marketplace.contact.profession')}</p>
                 <p className="text-gray-900">{selectedProfessional.trade}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Email</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">{t('marketplace.contact.email')}</p>
                 <p className="text-gray-900">{user?.email || 'N/A'}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Teléfono</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">{t('marketplace.contact.phone')}</p>
                 <p className="text-gray-900">{user?.phone || 'N/A'}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Tarifa</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">{t('marketplace.contact.rate')}</p>
                 <p className="text-gray-900">
-                  ${selectedProfessional.hourlyRate?.min}-${selectedProfessional.hourlyRate?.max}/hora
+                  ${selectedProfessional.hourlyRate?.min}-${selectedProfessional.hourlyRate?.max}/{t('common.hour')}
                 </p>
               </div>
               <div className="pt-4 border-t">
                 <p className="text-sm text-gray-600 mb-4">
-                  Puedes contactar a este profesional directamente por correo o teléfono.
-                  También puedes crear un proyecto y esperar propuestas.
+                  {t('marketplace.contact.hint')}
                 </p>
                 <Button
                   onClick={() => router.push('/control-panel')}
                   className="w-full"
                 >
-                  Crear Proyecto
+                  {t('marketplace.contact.createProject')}
                 </Button>
               </div>
             </div>

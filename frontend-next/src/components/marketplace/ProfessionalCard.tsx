@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { useTranslation } from '@/context/LanguageContext';
 import type { Professional, User } from '@/types';
 
 interface ProfessionalCardProps {
@@ -12,17 +13,18 @@ interface ProfessionalCardProps {
 
 export function ProfessionalCard({ professional, onContact }: ProfessionalCardProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const user = typeof professional.user === 'object' ? professional.user : null;
-  const userName = user?.name || 'Professional';
+  const userName = user?.name || t('professional.card.professional');
   
   // AI Score display logic
   const aiScore = professional.aiScore?.total || 0;
   const getScoreLabel = (score: number) => {
-    if (score >= 900) return 'Elite Professional';
-    if (score >= 800) return 'Top Rated';
-    if (score >= 700) return 'Highly Skilled';
-    if (score >= 600) return 'Verified Pro';
-    return 'Professional';
+    if (score >= 900) return t('professional.card.eliteProfessional');
+    if (score >= 800) return t('professional.card.topRatedLabel');
+    if (score >= 700) return t('professional.card.highlySkilled');
+    if (score >= 600) return t('professional.card.verifiedPro');
+    return t('professional.card.professional');
   };
 
   const getScoreColor = (score: number) => {
@@ -51,12 +53,12 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
                 {professional.verified && (
                   <Badge variant="success" className="flex items-center gap-1 flex-shrink-0">
                     <Award className="w-3 h-3" />
-                    Verified
+                    {t('professional.card.verified')}
                   </Badge>
                 )}
                 {professional.topRated && (
                   <Badge className="bg-orange-500 text-white flex-shrink-0">
-                    ⭐ Top Rated
+                    ⭐ {t('professional.card.topRated')}
                   </Badge>
                 )}
               </div>
@@ -79,7 +81,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
               <div className="text-lg font-semibold">{getScoreLabel(aiScore)}</div>
             </div>
             <div className="text-right">
-              <div className="text-sm opacity-90">AI Score™</div>
+              <div className="text-sm opacity-90">{t('professional.card.aiScore')}</div>
             </div>
           </div>
           
@@ -105,22 +107,22 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
           <div className="bg-gray-50 rounded-lg p-3">
             <div className="text-2xl font-bold text-gray-900">{professional.yearsExperience}</div>
-            <div className="text-xs text-gray-600 uppercase mt-1">Years Exp.</div>
+            <div className="text-xs text-gray-600 uppercase mt-1">{t('professional.card.yearsExp')}</div>
           </div>
           <div className="bg-gray-50 rounded-lg p-3">
             <div className="text-2xl font-bold text-gray-900">{professional.stats.projectsCompleted}</div>
-            <div className="text-xs text-gray-600 uppercase mt-1">Projects</div>
+            <div className="text-xs text-gray-600 uppercase mt-1">{t('professional.card.projects')}</div>
           </div>
           <div className="bg-gray-50 rounded-lg p-3">
             <div className="text-2xl font-bold text-gray-900">{Math.round(professional.stats.averageResponseTime)} hrs</div>
-            <div className="text-xs text-gray-600 uppercase mt-1">Answer</div>
+            <div className="text-xs text-gray-600 uppercase mt-1">{t('professional.card.answer')}</div>
           </div>
         </div>
 
         {/* Specialties */}
         {professional.specialties && professional.specialties.length > 0 && (
           <div className="mb-4">
-            <div className="text-sm font-semibold text-gray-700 mb-2 uppercase">Specialties</div>
+            <div className="text-sm font-semibold text-gray-700 mb-2 uppercase">{t('professional.card.specialties')}</div>
             <div className="flex flex-wrap gap-2">
               {professional.specialties.slice(0, 4).map((specialty: string, index: number) => (
                 <Badge key={index} variant="info" className="bg-blue-50 text-blue-700">
@@ -129,7 +131,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
               ))}
               {professional.specialties.length > 4 && (
                 <Badge variant="info" className="bg-gray-100 text-gray-700">
-                  +{professional.specialties.length - 4} more
+                  +{professional.specialties.length - 4} {t('professional.card.more')}
                 </Badge>
               )}
             </div>
@@ -139,7 +141,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
         {/* Hourly Rate */}
         <div className="bg-gray-50 rounded-lg p-4 mb-4">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-semibold text-gray-700 uppercase">Hourly Rate</div>
+            <div className="text-sm font-semibold text-gray-700 uppercase">{t('professional.hourlyRate')}</div>
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-green-600" />
               <span className="text-2xl font-bold text-gray-900">
@@ -160,7 +162,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
             onClick={() => router.push(`/professional/${professional._id}`)}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-lg"
           >
-            View Full Profile
+            {t('professional.card.viewFullProfile')}
           </Button>
           
           <div className="grid grid-cols-2 gap-2">
@@ -177,7 +179,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
               disabled={!user?.email}
             >
               <Mail className="w-4 h-4" />
-              Email
+              {t('professional.card.email')}
             </Button>
             
             {/* Phone Button - Only show if phoneVisible is true */}
@@ -191,7 +193,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
                 className="flex items-center justify-center gap-2"
               >
                 <Phone className="w-4 h-4" />
-                Call
+                {t('professional.card.call')}
               </Button>
             )}
             
@@ -203,7 +205,7 @@ export function ProfessionalCard({ professional, onContact }: ProfessionalCardPr
                 disabled
               >
                 <Phone className="w-4 h-4" />
-                Phone Hidden
+                {t('professional.card.phoneHidden')}
               </Button>
             )}
           </div>

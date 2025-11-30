@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Send, Paperclip, ArrowLeft, Users, Clock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import { messagesApi } from '@/lib/api/messages';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -12,6 +13,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import type { Conversation, Message, User } from '@/types';
 
 function MessagesContent() {
+  const { t, language } = useTranslation();
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -145,11 +147,11 @@ function MessagesContent() {
     const diffInHours = (now.getTime() - messageDate.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 24) {
-      return messageDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      return messageDate.toLocaleTimeString(language === 'es' ? 'es-ES' : 'en-US', { hour: 'numeric', minute: '2-digit' });
     } else if (diffInHours < 48) {
-      return 'Yesterday';
+      return t('time.yesterday');
     } else {
-      return messageDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return messageDate.toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', { month: 'short', day: 'numeric' });
     }
   };
 
@@ -158,7 +160,7 @@ function MessagesContent() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Messages</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('messages.title')}</h1>
 
         <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
           {/* Conversations List */}
@@ -166,7 +168,7 @@ function MessagesContent() {
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-gray-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Conversations</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('messages.conversations')}</h2>
               </div>
             </div>
             
@@ -177,9 +179,9 @@ function MessagesContent() {
                 </div>
               ) : conversations.length === 0 ? (
                 <div className="text-center py-12 px-4">
-                  <p className="text-gray-600">No conversations yet</p>
+                  <p className="text-gray-600">{t('messages.noConversations')}</p>
                   <p className="text-sm text-gray-500 mt-2">
-                    Start messaging professionals from the marketplace
+                    {t('messages.startMessaging')}
                   </p>
                 </div>
               ) : (
@@ -211,7 +213,7 @@ function MessagesContent() {
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 truncate">
-                            {conversation.lastMessage || 'No messages yet'}
+                            {conversation.lastMessage || t('messages.noMessagesYet')}
                           </p>
                         </div>
                         {unreadCount > 0 && (
@@ -250,8 +252,8 @@ function MessagesContent() {
                     </h3>
                     <p className="text-sm text-gray-500">
                       {getOtherParticipant(selectedConversation)?.userType === 'tradesperson' 
-                        ? 'Professional' 
-                        : 'Client'}
+                        ? t('messages.professional') 
+                        : t('messages.client')}
                     </p>
                   </div>
                 </div>
@@ -293,7 +295,7 @@ function MessagesContent() {
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Type a message..."
+                      placeholder={t('messages.typePlaceholder')}
                       className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                       disabled={sendingMessage}
                     />
@@ -312,10 +314,10 @@ function MessagesContent() {
                 <div>
                   <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Select a conversation
+                    {t('messages.selectConversation')}
                   </h3>
                   <p className="text-gray-600">
-                    Choose a conversation from the list to start messaging
+                    {t('messages.chooseFromList')}
                   </p>
                 </div>
               </div>

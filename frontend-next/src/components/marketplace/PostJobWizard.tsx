@@ -5,6 +5,7 @@ import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { projectsApi } from '@/lib/api/projects';
+import { useTranslation } from '@/context/LanguageContext';
 
 interface PostJobWizardProps {
   onClose: () => void;
@@ -12,6 +13,7 @@ interface PostJobWizardProps {
 }
 
 export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -145,21 +147,21 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
         <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
           <div className="p-6 border-b">
-            <h2 className="text-2xl font-bold text-green-600">✅ Job Posted Successfully!</h2>
-            <p className="text-gray-600 mt-1">AI Analysis of Your Project</p>
+            <h2 className="text-2xl font-bold text-green-600">{t('postJob.aiAnalysisTitle')}</h2>
+            <p className="text-gray-600 mt-1">{t('postJob.aiAnalysisSubtitle')}</p>
           </div>
 
           <div className="p-6 space-y-6">
             {/* Summary */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">📋 Project Summary</h3>
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">{t('postJob.projectSummary')}</h3>
               <p className="text-gray-700">{aiAnalysis.summary}</p>
             </div>
 
             {/* Complexity & Risk */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <h4 className="font-semibold text-purple-900 mb-2">Complexity Score</h4>
+                <h4 className="font-semibold text-purple-900 mb-2">{t('postJob.complexityScore')}</h4>
                 <div className="flex items-center gap-2">
                   <span className="text-3xl font-bold text-purple-600">{aiAnalysis.complexityScore}</span>
                   <span className="text-gray-600">/ 10</span>
@@ -167,7 +169,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
               </div>
 
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                <h4 className="font-semibold text-orange-900 mb-2">Risk Level</h4>
+                <h4 className="font-semibold text-orange-900 mb-2">{t('postJob.riskLevel')}</h4>
                 <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                   aiAnalysis.riskLevel === 'high' ? 'bg-red-100 text-red-800' :
                   aiAnalysis.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' :
@@ -181,7 +183,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
             {/* Recommended Skills */}
             {aiAnalysis.recommendedSkills && aiAnalysis.recommendedSkills.length > 0 && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 className="font-semibold text-green-900 mb-3">🎯 Recommended Skills</h4>
+                <h4 className="font-semibold text-green-900 mb-3">{t('postJob.recommendedSkills')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {aiAnalysis.recommendedSkills.map((skill: string, index: number) => (
                     <span key={index} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -195,12 +197,12 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
             {/* Timeline & Budget */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">⏱️ Estimated Timeline</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">{t('postJob.estimatedTimeline')}</h4>
                 <p className="text-gray-700">{aiAnalysis.estimatedTimeline}</p>
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">💰 Budget Range</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">{t('postJob.aiBudgetRange')}</h4>
                 <p className="text-gray-700">{aiAnalysis.budgetRange}</p>
               </div>
             </div>
@@ -208,7 +210,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
             {/* Cleaned Description */}
             {aiAnalysis.cleanedDescription && (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">✨ Professional Description</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">{t('postJob.professionalDesc')}</h4>
                 <p className="text-gray-700 italic">{aiAnalysis.cleanedDescription}</p>
               </div>
             )}
@@ -216,7 +218,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
             {/* Recommendations */}
             {aiAnalysis.recommendations && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h4 className="font-semibold text-yellow-900 mb-2">💡 Recommendations</h4>
+                <h4 className="font-semibold text-yellow-900 mb-2">{t('postJob.recommendations')}</h4>
                 <p className="text-gray-700">{aiAnalysis.recommendations}</p>
               </div>
             )}
@@ -224,7 +226,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
 
           <div className="p-6 border-t bg-gray-50">
             <Button onClick={handleCloseAnalysis} className="w-full">
-              Continue to Dashboard
+              {t('postJob.continueToDashboard')}
             </Button>
           </div>
         </div>
@@ -238,9 +240,9 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Post a Job</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{t('postJob.title')}</h2>
             <p className="text-sm text-gray-600 mt-1">
-              Step {currentStep} of {totalSteps}
+              {t('postJob.stepOf').replace('{current}', String(currentStep)).replace('{total}', String(totalSteps))}
             </p>
           </div>
           <button
@@ -278,39 +280,39 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
           {currentStep === 1 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Tell us about your project
+                {t('postJob.step1Title')}
               </h3>
               
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Project Title *
+                  {t('postJob.projectTitle')}
                 </label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                  placeholder="e.g., Install new electrical panel"
+                  placeholder={t('postJob.projectTitlePlaceholder')}
                   maxLength={100}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  {formData.title.length}/100 characters
+                  {formData.title.length}/100 {t('postJob.characters')}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Project Description *
+                  {t('postJob.projectDescription')}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={6}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                  placeholder="Describe your project in detail. Include what work needs to be done, any specific requirements, and timeline expectations..."
+                  placeholder={t('postJob.descriptionPlaceholder')}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Be as detailed as possible to get accurate proposals
+                  {t('postJob.descriptionHint')}
                 </p>
               </div>
             </div>
@@ -320,11 +322,11 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
           {currentStep === 2 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                What type of professional do you need?
+                {t('postJob.step2Title')}
               </h3>
               
               <p className="text-sm text-gray-600 mb-4">
-                Select one or more trade types (you can select multiple if the job requires different skills)
+                {t('postJob.step2Hint')}
               </p>
 
               <div className="grid grid-cols-2 gap-3">
@@ -339,7 +341,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
                         : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
                     }`}
                   >
-                    <span className="font-medium">{trade}</span>
+                    <span className="font-medium">{t(`common.trades.${trade.toLowerCase().replace(' ', '')}`) || trade}</span>
                   </button>
                 ))}
               </div>
@@ -347,7 +349,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
               {formData.tradeTypes.length > 0 && (
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                   <p className="text-sm text-blue-900">
-                    Selected: {formData.tradeTypes.join(', ')}
+                    {t('postJob.selected')}: {formData.tradeTypes.join(', ')}
                   </p>
                 </div>
               )}
@@ -358,17 +360,17 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
           {currentStep === 3 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                What's your budget range?
+                {t('postJob.step3Title')}
               </h3>
               
               <p className="text-sm text-gray-600 mb-4">
-                Provide a budget range to help professionals understand your expectations
+                {t('postJob.step3Hint')}
               </p>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Minimum Budget ($) *
+                    {t('postJob.minBudget')}
                   </label>
                   <input
                     type="number"
@@ -387,7 +389,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Maximum Budget ($) *
+                    {t('postJob.maxBudget')}
                   </label>
                   <input
                     type="number"
@@ -408,7 +410,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
               {formData.budget.min > 0 && formData.budget.max > 0 && (
                 <div className="mt-4 p-4 bg-green-50 rounded-lg">
                   <p className="text-sm text-green-900">
-                    Budget Range: <span className="font-bold">${formData.budget.min} - ${formData.budget.max}</span>
+                    {t('postJob.budgetRange')}: <span className="font-bold">${formData.budget.min} - ${formData.budget.max}</span>
                   </p>
                 </div>
               )}
@@ -419,12 +421,12 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
           {currentStep === 4 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Where is the job located?
+                {t('postJob.step4Title')}
               </h3>
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  City *
+                  {t('postJob.city')}
                 </label>
                 <input
                   type="text"
@@ -442,7 +444,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  State *
+                  {t('postJob.state')}
                 </label>
                 <input
                   type="text"
@@ -460,7 +462,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  ZIP Code (Optional)
+                  {t('postJob.zipCode')}
                 </label>
                 <input
                   type="text"
@@ -482,12 +484,12 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
           {currentStep === 5 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Project timeline and urgency
+                {t('postJob.step5Title')}
               </h3>
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Preferred Start Date (Optional)
+                  {t('postJob.startDate')}
                 </label>
                 <input
                   type="date"
@@ -504,7 +506,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Deadline (Optional)
+                  {t('postJob.deadline')}
                 </label>
                 <input
                   type="date"
@@ -521,7 +523,7 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Project Urgency
+                  {t('postJob.urgencyLevel')}
                 </label>
                 <div className="grid grid-cols-3 gap-3">
                   {(['low', 'medium', 'high'] as const).map((urgency) => (
@@ -535,20 +537,20 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
                           : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
                       }`}
                     >
-                      <span className="font-medium capitalize">{urgency}</span>
+                      <span className="font-medium">{t(`postJob.urgency${urgency.charAt(0).toUpperCase() + urgency.slice(1)}`)}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2">Review Your Job Posting</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">{t('postJob.reviewTitle')}</h4>
                 <div className="text-sm text-blue-800 space-y-1">
-                  <p><strong>Title:</strong> {formData.title}</p>
-                  <p><strong>Trade Types:</strong> {formData.tradeTypes.join(', ')}</p>
-                  <p><strong>Budget:</strong> ${formData.budget.min} - ${formData.budget.max}</p>
-                  <p><strong>Location:</strong> {formData.location.city}, {formData.location.state}</p>
-                  <p><strong>Urgency:</strong> {formData.urgency}</p>
+                  <p><strong>{t('postJob.projectTitle').replace(' *', '')}:</strong> {formData.title}</p>
+                  <p><strong>{t('postJob.step2Title').replace('?', '')}:</strong> {formData.tradeTypes.join(', ')}</p>
+                  <p><strong>{t('postJob.budgetRange')}:</strong> ${formData.budget.min} - ${formData.budget.max}</p>
+                  <p><strong>{t('profile.location')}:</strong> {formData.location.city}, {formData.location.state}</p>
+                  <p><strong>{t('postJob.urgencyLevel')}:</strong> {t(`postJob.urgency${formData.urgency.charAt(0).toUpperCase() + formData.urgency.slice(1)}`)}</p>
                 </div>
               </div>
             </div>
@@ -563,17 +565,17 @@ export function PostJobWizard({ onClose, onSuccess }: PostJobWizardProps) {
             disabled={currentStep === 1 || submitting}
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Back
+            {t('postJob.back')}
           </Button>
 
           {currentStep < totalSteps ? (
             <Button onClick={handleNext} disabled={!canProceed()}>
-              Next
+              {t('postJob.next')}
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           ) : (
             <Button onClick={handleSubmit} disabled={submitting || !canProceed()}>
-              {submitting ? 'Posting...' : 'Post Job'}
+              {submitting ? t('postJob.submitting') : t('postJob.submit')}
             </Button>
           )}
         </div>

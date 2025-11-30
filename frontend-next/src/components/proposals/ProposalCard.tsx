@@ -5,6 +5,7 @@ import { CheckCircle, XCircle, MessageSquare, DollarSign, Clock, User } from 'lu
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
+import { useTranslation } from '@/context/LanguageContext';
 import type { Proposal } from '@/types';
 
 interface ProposalCardProps {
@@ -16,13 +17,15 @@ interface ProposalCardProps {
 }
 
 export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading = false }: ProposalCardProps) {
+  const { t } = useTranslation();
+  
   const getProfessionalName = () => {
     if (typeof proposal.professional === 'object' && proposal.professional?.user) {
       if (typeof proposal.professional.user === 'object') {
         return proposal.professional.user.name || 'Unknown';
       }
     }
-    return 'Professional';
+    return t('professional.card.professional');
   };
 
   const getProfessionalUserId = () => {
@@ -46,13 +49,13 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
   const getStatusBadge = () => {
     switch (proposal.status) {
       case 'pending':
-        return <Badge variant="warning">Pending</Badge>;
+        return <Badge variant="warning">{t('proposals.pending')}</Badge>;
       case 'accepted':
-        return <Badge variant="success">Accepted</Badge>;
+        return <Badge variant="success">{t('proposals.accepted')}</Badge>;
       case 'rejected':
-        return <Badge variant="danger">Rejected</Badge>;
+        return <Badge variant="danger">{t('proposals.rejected')}</Badge>;
       case 'withdrawn':
-        return <Badge variant="default">Withdrawn</Badge>;
+        return <Badge variant="default">{t('proposals.withdrawn')}</Badge>;
       default:
         return <Badge variant="default">{proposal.status}</Badge>;
     }
@@ -69,7 +72,7 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{getProfessionalName()}</h3>
             <p className="text-sm text-gray-500">
-              Submitted {new Date(proposal.createdAt).toLocaleDateString()}
+              {t('proposals.submitted')} {new Date(proposal.createdAt).toLocaleDateString()}
             </p>
           </div>
         </div>
@@ -93,7 +96,7 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
 
       {/* Cover Letter */}
       <div className="mb-4">
-        <p className="text-sm font-medium text-gray-900 mb-2">Cover Letter:</p>
+        <p className="text-sm font-medium text-gray-900 mb-2">{t('proposals.coverLetter')}:</p>
         <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded border border-gray-200">
           {proposal.coverLetter}
         </p>
@@ -102,7 +105,7 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
       {/* Milestones */}
       {proposal.milestones && proposal.milestones.length > 0 && (
         <div className="mb-4">
-          <p className="text-sm font-medium text-gray-900 mb-2">Milestones:</p>
+          <p className="text-sm font-medium text-gray-900 mb-2">{t('proposals.milestones')}:</p>
           <div className="space-y-2">
             {proposal.milestones.map((milestone, index) => (
               <div key={index} className="bg-gray-50 p-2 rounded border border-gray-200 text-sm">
@@ -127,7 +130,7 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
             {loading ? <Spinner size="sm" /> : (
               <>
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Accept
+                {t('proposals.accept')}
               </>
             )}
           </Button>
@@ -138,7 +141,7 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
             className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
           >
             <XCircle className="w-4 h-4 mr-2" />
-            Reject
+            {t('proposals.reject')}
           </Button>
           <Button
             onClick={() => {
@@ -171,7 +174,7 @@ export function ProposalCard({ proposal, onAccept, onReject, onMessage, loading 
             variant="secondary"
           >
             <MessageSquare className="w-4 h-4 mr-2" />
-            Message Professional
+            {t('proposals.messageProfessional')}
           </Button>
         </div>
       )}

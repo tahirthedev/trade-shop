@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Plus, Briefcase, MessageSquare, Star, Bot, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import { projectsApi } from '@/lib/api/projects';
 import { proposalsApi } from '@/lib/api/proposals';
 import { messagesApi } from '@/lib/api/messages';
@@ -22,6 +23,7 @@ import type { Project, Proposal } from '@/types';
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const { t, language } = useTranslation();
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [proposals, setProposals] = useState<Record<string, Proposal[]>>({});
@@ -195,7 +197,7 @@ export default function DashboardPage() {
   };
 
   const handleCloseJob = async (projectId: string) => {
-    if (!confirm('Are you sure you want to close this job? This action cannot be undone.')) {
+    if (!confirm(t('dashboard.closeJobConfirm'))) {
       return;
     }
     
@@ -281,16 +283,12 @@ export default function DashboardPage() {
       cancelled: 'danger',
     };
     
-    const labels: Record<string, string> = {
-      new: 'Nuevo',
-      active: 'Activo',
-      completed: 'Completado',
-      cancelled: 'Cancelado',
-    };
+    const statusKey = status as 'new' | 'active' | 'completed' | 'cancelled';
+    const label = t(`dashboard.status.${statusKey}`) || status;
 
     return (
       <Badge variant={variants[status] || 'default'}>
-        {labels[status] || status}
+        {label}
       </Badge>
     );
   };
@@ -310,10 +308,10 @@ export default function DashboardPage() {
           className="mb-8"
         >
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-            Control Panel
+            {t('dashboard.title')}
           </h1>
           <p className="text-gray-600">
-            Bienvenido, {user.name} 👋
+            {t('dashboard.welcome')}, {user.name} 👋
           </p>
         </motion.div>
 
@@ -334,7 +332,7 @@ export default function DashboardPage() {
                 <Briefcase className="w-6 h-6 text-white" />
               </motion.div>
               <div>
-                <p className="text-sm text-gray-600">Proyectos Activos</p>
+                <p className="text-sm text-gray-600">{t('dashboard.activeProjects')}</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {projects.filter(p => p.status === 'new' || p.status === 'active').length}
                 </p>
@@ -352,7 +350,7 @@ export default function DashboardPage() {
                 <Star className="w-6 h-6 text-white" />
               </motion.div>
               <div>
-                <p className="text-sm text-gray-600">Completados</p>
+                <p className="text-sm text-gray-600">{t('dashboard.completedProjects')}</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {projects.filter(p => p.status === 'completed').length}
                 </p>
@@ -370,7 +368,7 @@ export default function DashboardPage() {
                 <MessageSquare className="w-6 h-6 text-white" />
               </motion.div>
               <div>
-                <p className="text-sm text-gray-600">Propuestas</p>
+                <p className="text-sm text-gray-600">{t('dashboard.proposals')}</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {projects.reduce((total, p) => total + (p.proposalCount || 0), 0)}
                 </p>
@@ -386,16 +384,16 @@ export default function DashboardPage() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className="flex justify-between items-center mb-6"
         >
-          <h2 className="text-2xl font-bold text-gray-900">Mis Proyectos</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('dashboard.myProjects')}</h2>
           <div className="flex gap-3">
             <Button variant="secondary" onClick={() => setShowAnalyzerModal(true)}>
               <Sparkles className="w-4 h-4 mr-2" />
-              Project Analysis with AI
+              {t('dashboard.projectAnalysis')}
             </Button>
             {user.userType === 'client' && (
               <Button onClick={() => setShowJobWizard(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Nuevo Proyecto
+                {t('dashboard.newProject')}
               </Button>
             )}
           </div>
@@ -415,16 +413,16 @@ export default function DashboardPage() {
             <div className="text-center py-12">
               <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                No hay proyectos
+                {t('dashboard.noProjects')}
               </h3>
               <p className="text-gray-600 mb-4">
                 {user.userType === 'client'
-                  ? 'Crea tu primer proyecto para comenzar'
-                  : 'No tienes proyectos asignados aún'}
+                  ? t('dashboard.noProjectsClient')
+                  : t('dashboard.noProjectsProfessional')}
               </p>
               {user.userType === 'client' && (
                 <Button onClick={() => setShowJobWizard(true)}>
-                  Crear Proyecto
+                  {t('dashboard.createProject')}
                 </Button>
               )}
             </div>
@@ -475,7 +473,7 @@ export default function DashboardPage() {
 
                   {/* Budget - Prominent */}
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-3 mb-3">
-                    <p className="text-xs text-gray-600 mb-1">Budget</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('dashboard.budget')}</p>
                     <p className="text-xl font-bold text-green-700">
                       ${project.budget.min.toLocaleString()}-${project.budget.max.toLocaleString()}
                     </p>
@@ -519,10 +517,10 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-medium text-purple-600">
-                        {project.proposalCount || 0} proposals
+                        {project.proposalCount || 0} {t('dashboard.proposals').toLowerCase()}
                       </span>
                       <span className="text-gray-400">
-                        {new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {new Date(project.createdAt).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                   </div>
@@ -542,16 +540,16 @@ export default function DashboardPage() {
             setAnalyzerData({ description: '', imageFile: null, imagePreview: '' });
             setAnalysisResult('');
           }}
-          title="AI Project Analyzer"
+          title={t('dashboard.aiAnalyzer.title')}
         >
           <form onSubmit={handleAnalyzeProject} className="space-y-4">
             <p className="text-gray-600 text-sm">
-              Upload a photo of the project site and/or provide a description for AI analysis
+              {t('dashboard.aiAnalyzer.subtitle')}
             </p>
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Upload Project Photo (Optional)
+                {t('dashboard.aiAnalyzer.uploadPhoto')}
               </label>
               <input
                 type="file"
@@ -574,14 +572,14 @@ export default function DashboardPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Project Description
+                {t('dashboard.aiAnalyzer.projectDescription')}
               </label>
               <textarea
                 value={analyzerData.description}
                 onChange={(e) => setAnalyzerData({ ...analyzerData, description: e.target.value })}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 bg-white"
-                placeholder="Describe the project: type of work, dimensions, special requirements, etc."
+                placeholder={t('dashboard.aiAnalyzer.descriptionPlaceholder')}
                 disabled={analyzing}
               />
             </div>
@@ -594,12 +592,12 @@ export default function DashboardPage() {
               {analyzing ? (
                 <>
                   <Spinner size="sm" />
-                  <span className="ml-2">Analyzing...</span>
+                  <span className="ml-2">{t('dashboard.aiAnalyzer.analyzing')}</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Analyze with AI
+                  {t('dashboard.aiAnalyzer.analyzeButton')}
                 </>
               )}
             </Button>
@@ -607,7 +605,7 @@ export default function DashboardPage() {
             {analysisResult && (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-blue-600 mb-3">
-                  📊 AI Analysis Results
+                  📊 {t('dashboard.aiAnalyzer.results')}
                 </h3>
                 <div className="text-gray-900 whitespace-pre-wrap text-sm">
                   {analysisResult}
@@ -630,7 +628,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               {getStatusBadge(selectedProject.status)}
               <div className="text-right">
-                <p className="text-sm text-gray-600 mb-1">Budget</p>
+                <p className="text-sm text-gray-600 mb-1">{t('dashboard.budget')}</p>
                 <p className="text-2xl font-bold text-green-600">
                   ${selectedProject.budget.min.toLocaleString()}-${selectedProject.budget.max.toLocaleString()}
                 </p>
@@ -642,17 +640,17 @@ export default function DashboardPage() {
               <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
                 <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-purple-600" />
-                  AI Analysis
+                  {t('ai.title')}
                 </h4>
                 <div className="grid grid-cols-3 gap-3 mb-3">
                   <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1">Complexity</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('dashboard.aiAnalyzer.complexity')}</p>
                     <p className="text-2xl font-bold text-purple-600">
                       {selectedProject.aiAnalysis.complexityScore}/10
                     </p>
                   </div>
                   <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1">Risk Level</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('dashboard.aiAnalyzer.riskLevel')}</p>
                     <p className={`text-lg font-bold ${
                       selectedProject.aiAnalysis.riskLevel === 'high' ? 'text-red-600' :
                       selectedProject.aiAnalysis.riskLevel === 'medium' ? 'text-yellow-600' :
@@ -662,7 +660,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1">Timeline</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('dashboard.aiAnalyzer.timeline')}</p>
                     <p className="text-sm font-semibold text-blue-600">
                       {selectedProject.aiAnalysis.estimatedTimeline}
                     </p>
@@ -678,22 +676,22 @@ export default function DashboardPage() {
 
             {/* Description */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">{t('dashboard.description')}</h4>
               <p className="text-gray-700 whitespace-pre-wrap">{selectedProject.description}</p>
             </div>
 
             {/* Location & Date */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Location</p>
+                <p className="text-sm text-gray-600 mb-1">{t('dashboard.location')}</p>
                 <p className="font-medium text-gray-900">
                   📍 {selectedProject.location.city}, {selectedProject.location.state}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Posted</p>
+                <p className="text-sm text-gray-600 mb-1">{t('dashboard.posted')}</p>
                 <p className="font-medium text-gray-900">
-                  {new Date(selectedProject.createdAt).toLocaleDateString('en-US', { 
+                  {new Date(selectedProject.createdAt).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US', { 
                     year: 'numeric', 
                     month: 'long', 
                     day: 'numeric' 
@@ -713,7 +711,7 @@ export default function DashboardPage() {
                     }}
                     className="flex-1 bg-green-600 hover:bg-green-700"
                   >
-                    Mark as Filled
+                    {t('dashboard.markAsFilled')}
                   </Button>
                 )}
                 <Button
@@ -724,7 +722,7 @@ export default function DashboardPage() {
                   variant="secondary"
                   className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
                 >
-                  Close Job
+                  {t('dashboard.closeJob')}
                 </Button>
               </div>
             )}
@@ -741,7 +739,7 @@ export default function DashboardPage() {
                   className="w-full"
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  View {selectedProject.proposalCount ?? 0} Proposal{(selectedProject.proposalCount ?? 0) !== 1 ? 's' : ''}
+                  {t('dashboard.viewProposals')} ({selectedProject.proposalCount ?? 0})
                 </Button>
               </div>
             )}
@@ -756,7 +754,7 @@ export default function DashboardPage() {
                 ) : proposals[selectedProject._id] && proposals[selectedProject._id].length > 0 ? (
                   <div className="space-y-4">
                     <h4 className="font-semibold text-gray-900">
-                      Received Proposals ({proposals[selectedProject._id].length})
+                      {t('dashboard.receivedProposals')} ({proposals[selectedProject._id].length})
                     </h4>
                     {proposals[selectedProject._id].map((proposal) => (
                       <ProposalCard
@@ -770,7 +768,7 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-4">No proposals yet</p>
+                  <p className="text-gray-500 text-center py-4">{t('dashboard.noProposalsYet')}</p>
                 )}
               </div>
             )}
@@ -794,11 +792,11 @@ export default function DashboardPage() {
         <Modal
           isOpen={true}
           onClose={() => setShowCreateModal(false)}
-          title="Crear Nuevo Proyecto"
+          title={t('dashboard.createModal.title')}
         >
           <form onSubmit={handleCreateProject} className="space-y-4">
             <Input
-              label="Título del proyecto"
+              label={t('dashboard.createModal.projectTitle')}
               type="text"
               value={newProject.title}
               onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
@@ -808,7 +806,7 @@ export default function DashboardPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Descripción
+                {t('dashboard.createModal.description')}
               </label>
               <textarea
                 value={newProject.description}
@@ -821,7 +819,7 @@ export default function DashboardPage() {
             </div>
 
             <Input
-              label="Presupuesto ($)"
+              label={t('dashboard.createModal.budget')}
               type="number"
               value={newProject.budget}
               onChange={(e) => setNewProject({ ...newProject, budget: e.target.value })}
@@ -830,7 +828,7 @@ export default function DashboardPage() {
             />
 
             <Input
-              label="Ubicación"
+              label={t('dashboard.createModal.location')}
               type="text"
               value={newProject.location}
               onChange={(e) => setNewProject({ ...newProject, location: e.target.value })}
@@ -840,7 +838,7 @@ export default function DashboardPage() {
 
             <div className="flex gap-2 pt-4">
               <Button type="submit" disabled={creating} className="flex-1">
-                {creating ? <Spinner size="sm" /> : 'Crear Proyecto'}
+                {creating ? <Spinner size="sm" /> : t('dashboard.createProject')}
               </Button>
               <Button
                 type="button"
@@ -848,7 +846,7 @@ export default function DashboardPage() {
                 onClick={() => setShowCreateModal(false)}
                 disabled={creating}
               >
-                Cancelar
+                {t('common.cancel')}
               </Button>
             </div>
           </form>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import { profileApi } from '@/lib/api/profile';
 import { uploadApi } from '@/lib/api/upload';
 import { Button } from '@/components/ui/Button';
@@ -59,6 +60,7 @@ interface WorkExperience {
 }
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -509,14 +511,14 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Profile</h1>
-          <p className="text-gray-600">Manage your professional profile and showcase your work</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('profile.title')}</h1>
+          <p className="text-gray-600">{t('profile.subtitle')}</p>
         </div>
 
         {/* Error Message */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-            <p className="font-medium">Error</p>
+            <p className="font-medium">{t('common.error')}</p>
             <p className="text-sm">{error}</p>
             {error.includes('log in again') && (
               <p className="text-sm mt-2">
@@ -524,7 +526,7 @@ export default function ProfilePage() {
                   onClick={() => router.push('/login')} 
                   className="underline font-medium hover:text-red-900"
                 >
-                  Click here to log in
+                  {t('profile.clickToLogin')}
                 </button>
               </p>
             )}
@@ -535,8 +537,8 @@ export default function ProfilePage() {
         <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Profile Completion</h3>
-              <p className="text-sm text-gray-600">Complete your profile to get more opportunities</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('profile.profileCompletion')}</h3>
+              <p className="text-sm text-gray-600">{t('profile.completeToGetMore')}</p>
             </div>
             <div className="text-right">
               <div className={`text-3xl font-bold ${profileCompletion === 100 ? 'text-green-600' : 'text-blue-600'}`}>
@@ -565,7 +567,7 @@ export default function ProfilePage() {
               }`}
             >
               <User className="w-5 h-5 inline mr-2" />
-              Profile Info
+              {t('profile.tabs.profile')}
             </button>
             <button
               onClick={() => setActiveTab('portfolio')}
@@ -576,7 +578,7 @@ export default function ProfilePage() {
               }`}
             >
               <Briefcase className="w-5 h-5 inline mr-2" />
-              Portfolio
+              {t('profile.tabs.portfolio')}
             </button>
             <button
               onClick={() => setActiveTab('experience')}
@@ -587,7 +589,7 @@ export default function ProfilePage() {
               }`}
             >
               <FileText className="w-5 h-5 inline mr-2" />
-              Experience
+              {t('profile.tabs.experience')}
             </button>
             <button
               onClick={() => setActiveTab('certifications')}
@@ -598,7 +600,7 @@ export default function ProfilePage() {
               }`}
             >
               <Award className="w-5 h-5 inline mr-2" />
-              Certifications
+              {t('profile.tabs.certifications')}
             </button>
           </div>
         </div>
@@ -608,7 +610,7 @@ export default function ProfilePage() {
           <div className="space-y-6">
             {/* Profile Photo */}
             <Card>
-              <h2 className="text-2xl font-bold mb-4">Profile Photo</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('profile.profilePhoto')}</h2>
               <div className="flex items-center gap-6">
                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
                   {profileImage || (user?.avatar && !user.avatar.includes('🔧')) ? (
@@ -642,40 +644,40 @@ export default function ProfilePage() {
                     disabled={uploading}
                   >
                     <Camera className="w-4 h-4 mr-2" />
-                    {uploading ? 'Uploading...' : 'Upload Photo'}
+                    {uploading ? t('profile.uploading') : t('profile.uploadPhoto')}
                   </Button>
-                  <p className="text-sm text-gray-500">JPG, PNG or GIF. Max size 5MB.</p>
+                  <p className="text-sm text-gray-500">{t('profile.photoHint')}</p>
                 </div>
               </div>
             </Card>
 
             {/* Basic Info */}
             <Card>
-              <h2 className="text-2xl font-bold mb-4">Basic Information</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('profile.basicInfo')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Full Name"
+                  label={t('profile.fullName')}
                   type="text"
                   value={profileForm.name}
                   onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
 
                 />
                 <Input
-                  label="Email"
+                  label={t('profile.email')}
                   type="email"
                   value={profileForm.email}
                   onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
 
                 />
                 <Input
-                  label="Phone"
+                  label={t('profile.phone')}
                   type="tel"
                   value={profileForm.phone}
                   onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
 
                 />
                 <Input
-                  label="Trade/Profession"
+                  label={t('profile.tradeProfession')}
                   type="text"
                   value={profileForm.trade}
                   onChange={(e) => setProfileForm({ ...profileForm, trade: e.target.value })}
@@ -685,17 +687,17 @@ export default function ProfilePage() {
 
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Professional Bio
+                  {t('profile.professionalBio')}
                 </label>
                 <textarea
                   value={profileForm.bio}
                   onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
                   rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400 bg-white"
-                  placeholder="Tell clients about yourself, your experience, and what makes you unique..."
+                  placeholder={t('profile.bioPlaceholder')}
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  {profileForm.bio.length}/500 characters
+                  {profileForm.bio.length}/500 {t('profile.characters')}
                 </p>
               </div>
 
@@ -703,15 +705,15 @@ export default function ProfilePage() {
               <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  Contact Preferences
+                  {t('profile.contactPreferences')}
                 </h3>
                 <div className="flex items-center justify-between">
                   <div>
                     <label htmlFor="phoneVisible" className="text-sm font-medium text-gray-900">
-                      Show Phone Number to Clients
+                      {t('profile.showPhoneNumber')}
                     </label>
                     <p className="text-xs text-gray-600 mt-1">
-                      Allow clients to see and call your phone number on your profile
+                      {t('profile.phoneVisibleHint')}
                     </p>
                   </div>
                   <div className="flex items-center">
@@ -735,11 +737,11 @@ export default function ProfilePage() {
 
             {/* Location */}
             <Card>
-              <h2 className="text-2xl font-bold mb-4">Location</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('profile.location')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <Input
-                    label="Street Address"
+                    label={t('profile.streetAddress')}
                     type="text"
                     value={profileForm.location.street}
                     onChange={(e) => setProfileForm({ 
@@ -750,7 +752,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <Input
-                  label="City"
+                  label={t('profile.city')}
                   type="text"
                   value={profileForm.location.city}
                   onChange={(e) => setProfileForm({ 
@@ -759,7 +761,7 @@ export default function ProfilePage() {
                   })}
                 />
                 <Input
-                  label="State"
+                  label={t('profile.state')}
                   type="text"
                   value={profileForm.location.state}
                   onChange={(e) => setProfileForm({ 
@@ -768,7 +770,7 @@ export default function ProfilePage() {
                   })}
                 />
                 <Input
-                  label="ZIP Code"
+                  label={t('profile.zipCode')}
                   type="text"
                   value={profileForm.location.zipCode}
                   onChange={(e) => setProfileForm({ 
@@ -781,23 +783,23 @@ export default function ProfilePage() {
 
             {/* Professional Details */}
             <Card>
-              <h2 className="text-2xl font-bold mb-4">Professional Details</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('profile.professionalDetails')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <Input
-                  label="Years of Experience"
+                  label={t('profile.yearsExperience')}
                   type="number"
                   value={profileForm.yearsExperience}
                   onChange={(e) => setProfileForm({ ...profileForm, yearsExperience: parseInt(e.target.value) })}
                 />
                 <Input
-                  label="Hourly Rate (Min)"
+                  label={t('profile.hourlyRateMin')}
                   type="number"
                   value={profileForm.hourlyRateMin}
                   onChange={(e) => setProfileForm({ ...profileForm, hourlyRateMin: parseFloat(e.target.value) })}
 
                 />
                 <Input
-                  label="Hourly Rate (Max)"
+                  label={t('profile.hourlyRateMax')}
                   type="number"
                   value={profileForm.hourlyRateMax}
                   onChange={(e) => setProfileForm({ ...profileForm, hourlyRateMax: parseFloat(e.target.value) })}
@@ -807,23 +809,23 @@ export default function ProfilePage() {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Availability Status
+                  {t('profile.availabilityStatus')}
                 </label>
                 <select
                   value={profileForm.availability}
                   onChange={(e) => setProfileForm({ ...profileForm, availability: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                 >
-                  <option value="Available">Available Now</option>
-                  <option value="Busy">Busy - Limited Availability</option>
-                  <option value="Unavailable">Not Available</option>
+                  <option value="Available">{t('profile.availableNow')}</option>
+                  <option value="Busy">{t('profile.busy')}</option>
+                  <option value="Unavailable">{t('profile.unavailable')}</option>
                 </select>
               </div>
 
               {/* Specialties */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Specialties & Skills
+                  {t('profile.specialtiesSkills')}
                 </label>
                 <div className="flex gap-2 mb-2">
                   <Input
@@ -831,7 +833,7 @@ export default function ProfilePage() {
                     value={newSpecialty}
                     onChange={(e) => setNewSpecialty(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialty())}
-                    placeholder="e.g., Residential Wiring, Circuit Installation"
+                    placeholder={t('profile.specialtiesPlaceholder')}
                   />
                   <Button onClick={addSpecialty} variant="secondary">
                     <Plus className="w-4 h-4" />
@@ -852,7 +854,7 @@ export default function ProfilePage() {
               {/* Languages */}
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Languages
+                  {t('profile.languages')}
                 </label>
                 <div className="flex gap-2 mb-2">
                   <Input
@@ -860,7 +862,7 @@ export default function ProfilePage() {
                     value={newLanguage}
                     onChange={(e) => setNewLanguage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addLanguage())}
-                    placeholder="e.g., English, Spanish"
+                    placeholder={t('profile.languagesPlaceholder')}
                   />
                   <Button onClick={addLanguage} variant="secondary">
                     <Plus className="w-4 h-4" />
@@ -881,10 +883,10 @@ export default function ProfilePage() {
 
             {/* Social Links */}
             <Card>
-              <h2 className="text-2xl font-bold mb-4">Social & Web Links</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('profile.socialLinks')}</h2>
               <div className="space-y-4">
                 <Input
-                  label="Website"
+                  label={t('profile.website')}
                   type="url"
                   value={profileForm.website}
                   onChange={(e) => setProfileForm({ ...profileForm, website: e.target.value })}
@@ -892,14 +894,14 @@ export default function ProfilePage() {
                   placeholder="https://yourwebsite.com"
                 />
                 <Input
-                  label="LinkedIn"
+                  label={t('profile.linkedin')}
                   type="url"
                   value={profileForm.linkedin}
                   onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
                   placeholder="https://linkedin.com/in/yourprofile"
                 />
                 <Input
-                  label="Twitter"
+                  label={t('profile.twitter')}
                   type="url"
                   value={profileForm.twitter}
                   onChange={(e) => setProfileForm({ ...profileForm, twitter: e.target.value })}
@@ -911,10 +913,10 @@ export default function ProfilePage() {
             {/* Save Button */}
             <div className="flex justify-end gap-4">
               <Button variant="secondary" onClick={() => router.back()}>
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button onClick={handleSaveProfile} disabled={saving}>
-                {saving ? <Spinner size="sm" /> : 'Save Profile'}
+                {saving ? <Spinner size="sm" /> : t('profile.saveProfile')}
               </Button>
             </div>
           </div>
@@ -925,23 +927,23 @@ export default function ProfilePage() {
           <div>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-2xl font-bold">Portfolio</h2>
-                <p className="text-gray-600">Showcase your best work to attract clients</p>
+                <h2 className="text-2xl font-bold">{t('profile.tabs.portfolio')}</h2>
+                <p className="text-gray-600">{t('profile.portfolioDescription')}</p>
               </div>
               <Button onClick={() => setShowPortfolioModal(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Project
+                {t('profile.addProject')}
               </Button>
             </div>
 
             {portfolioItems.length === 0 ? (
               <Card className="text-center py-12">
                 <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No portfolio items yet</h3>
-                <p className="text-gray-600 mb-4">Add your projects to showcase your work</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('profile.noPortfolio')}</h3>
+                <p className="text-gray-600 mb-4">{t('profile.addPortfolioHint')}</p>
                 <Button onClick={() => setShowPortfolioModal(true)}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add First Project
+                  {t('profile.addFirstProject')}
                 </Button>
               </Card>
             ) : (
@@ -956,7 +958,7 @@ export default function ProfilePage() {
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
                     <p className="text-gray-600 text-sm mb-3 line-clamp-3">{item.description}</p>
                     {item.clientName && (
-                      <p className="text-sm text-gray-500 mb-2">Client: {item.clientName}</p>
+                      <p className="text-sm text-gray-500 mb-2">{t('profile.client')}: {item.clientName}</p>
                     )}
                     {item.budget && (
                       <p className="text-sm font-semibold text-green-600 mb-2">${item.budget}</p>
@@ -974,7 +976,7 @@ export default function ProfilePage() {
                       className="w-full text-red-600 hover:bg-red-50"
                     >
                       <X className="w-4 h-4 mr-1" />
-                      Remove
+                      {t('profile.remove')}
                     </Button>
                   </Card>
                 ))}
@@ -988,23 +990,23 @@ export default function ProfilePage() {
           <div>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-2xl font-bold">Work Experience</h2>
-                <p className="text-gray-600">Add your work history and achievements</p>
+                <h2 className="text-2xl font-bold">{t('profile.workExperience')}</h2>
+                <p className="text-gray-600">{t('profile.workExperienceHint')}</p>
               </div>
               <Button onClick={() => setShowExpModal(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Experience
+                {t('profile.addExperience')}
               </Button>
             </div>
 
             {workExperience.length === 0 ? (
               <Card className="text-center py-12">
                 <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No work experience added</h3>
-                <p className="text-gray-600 mb-4">Add your work history to build credibility</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('profile.noExperience')}</h3>
+                <p className="text-gray-600 mb-4">{t('profile.addExperienceHint')}</p>
                 <Button onClick={() => setShowExpModal(true)}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Experience
+                  {t('profile.addExperience')}
                 </Button>
               </Card>
             ) : (
@@ -1020,7 +1022,7 @@ export default function ProfilePage() {
                           {exp.location}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
-                          {exp.startDate} - {exp.currentlyWorking ? 'Present' : exp.endDate}
+                          {exp.startDate} - {exp.currentlyWorking ? t('profile.present') : exp.endDate}
                         </p>
                         <p className="text-gray-700 mt-3">{exp.description}</p>
                       </div>
@@ -1045,23 +1047,23 @@ export default function ProfilePage() {
           <div>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-2xl font-bold">Certifications & Licenses</h2>
-                <p className="text-gray-600">Add your professional certifications and licenses</p>
+                <h2 className="text-2xl font-bold">{t('profile.certificationsLicenses')}</h2>
+                <p className="text-gray-600">{t('profile.certificationsHint')}</p>
               </div>
               <Button onClick={() => setShowCertModal(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Certification
+                {t('profile.addCertification')}
               </Button>
             </div>
 
             {certifications.length === 0 ? (
               <Card className="text-center py-12">
                 <Award className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No certifications added</h3>
-                <p className="text-gray-600 mb-4">Add certifications to boost your credibility</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('profile.noCertifications')}</h3>
+                <p className="text-gray-600 mb-4">{t('profile.addCertificationHint')}</p>
                 <Button onClick={() => setShowCertModal(true)}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Certification
+                  {t('profile.addCertification')}
                 </Button>
               </Card>
             ) : (
@@ -1076,11 +1078,11 @@ export default function ProfilePage() {
                             <h3 className="text-lg font-bold text-gray-900">{cert.name}</h3>
                             <p className="text-blue-600 font-semibold">{cert.issuingOrganization}</p>
                             <p className="text-sm text-gray-500 mt-1">
-                              Issued: {cert.issueDate}
+                              {t('profile.issued')}: {cert.issueDate}
                             </p>
                             {cert.expiryDate && (
                               <p className="text-sm text-gray-500">
-                                Expires: {cert.expiryDate}
+                                {t('profile.expires')}: {cert.expiryDate}
                               </p>
                             )}
                             {cert.credentialId && (

@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { useTranslation } from '@/context/LanguageContext';
 import type { Review, User } from '@/types';
 
 interface ReviewListProps {
@@ -27,6 +28,7 @@ export function ReviewList({
   projectId,
   userId
 }: ReviewListProps) {
+  const { t } = useTranslation();
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [expandedReview, setExpandedReview] = useState<string | null>(null);
@@ -173,13 +175,13 @@ export function ReviewList({
               <div>
                 {renderStars(Math.round(averageRating), 'lg')}
                 <p className="text-gray-600 mt-1">
-                  {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                  {reviews.length} {reviews.length === 1 ? t('reviews.review') : t('reviews.reviews')}
                 </p>
               </div>
             </div>
             {allowReviews && (
               <Button onClick={() => setShowReviewModal(true)} className="w-full md:w-auto">
-                Write a Review
+                {t('reviews.writeReview')}
               </Button>
             )}
           </div>
@@ -209,8 +211,8 @@ export function ReviewList({
         {reviews.length === 0 ? (
           <Card className="text-center py-12">
             <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No reviews yet</h3>
-            <p className="text-gray-600">Be the first to leave a review!</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('reviews.noReviews')}</h3>
+            <p className="text-gray-600">{t('reviews.noReviewsSubtitle')}</p>
           </Card>
         ) : (
           reviews.map((review) => {
@@ -229,13 +231,13 @@ export function ReviewList({
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h4 className="font-semibold text-gray-900">{client?.name || 'Anonymous'}</h4>
+                        <h4 className="font-semibold text-gray-900">{client?.name || t('reviews.anonymous')}</h4>
                         <div className="flex items-center gap-2 mt-1">
                           {renderStars(review.rating)}
                           {review.verified && (
                             <Badge variant="success" className="text-xs">
                               <CheckCircle className="w-3 h-3 mr-1" />
-                              Verified
+                              {t('reviews.verified')}
                             </Badge>
                           )}
                         </div>
@@ -257,7 +259,7 @@ export function ReviewList({
                         onClick={() => setExpandedReview(isExpanded ? null : review._id)}
                         className="text-sm text-blue-600 hover:text-blue-700 mb-3"
                       >
-                        {isExpanded ? 'Hide' : 'Show'} detailed ratings
+                        {isExpanded ? t('reviews.hideDetails') : t('reviews.showDetails')}
                       </button>
                     )}
 
@@ -274,7 +276,7 @@ export function ReviewList({
 
                     {review.response && (
                       <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded mt-4">
-                        <p className="font-semibold text-blue-900 mb-2">Response from Professional</p>
+                        <p className="font-semibold text-blue-900 mb-2">{t('reviews.responseFrom')}</p>
                         <p className="text-gray-700 text-sm">{review.response.text}</p>
                         <p className="text-xs text-gray-500 mt-2">
                           {new Date(review.response.respondedAt).toLocaleDateString()}
@@ -288,11 +290,11 @@ export function ReviewList({
                         className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
                       >
                         <ThumbsUp className="w-4 h-4" />
-                        <span className="text-sm">Helpful ({review.helpful})</span>
+                        <span className="text-sm">{t('reviews.helpful')} ({review.helpful})</span>
                       </button>
                       {review.wouldRecommend && (
                         <Badge variant="success" className="text-xs">
-                          Would Recommend
+                          {t('reviews.wouldRecommend')}
                         </Badge>
                       )}
                     </div>
@@ -309,12 +311,12 @@ export function ReviewList({
         <Modal
           isOpen={true}
           onClose={() => setShowReviewModal(false)}
-          title="Write a Review"
+          title={t('reviews.writeReview')}
         >
           <form onSubmit={handleSubmitReview} className="space-y-6">
             <div>
               <RatingInput
-                label="Overall Rating"
+                label={t('reviews.overallRating')}
                 value={reviewForm.rating}
                 onChange={(val) => setReviewForm({ ...reviewForm, rating: val })}
               />
@@ -322,45 +324,45 @@ export function ReviewList({
 
             <div className="grid grid-cols-2 gap-4">
               <RatingInput
-                label="Quality of Work"
+                label={t('reviews.qualityOfWork')}
                 value={reviewForm.quality}
                 onChange={(val) => setReviewForm({ ...reviewForm, quality: val })}
               />
               <RatingInput
-                label="Communication"
+                label={t('reviews.communication')}
                 value={reviewForm.communication}
                 onChange={(val) => setReviewForm({ ...reviewForm, communication: val })}
               />
               <RatingInput
-                label="Timeliness"
+                label={t('reviews.timeliness')}
                 value={reviewForm.timeliness}
                 onChange={(val) => setReviewForm({ ...reviewForm, timeliness: val })}
               />
               <RatingInput
-                label="Professionalism"
+                label={t('reviews.professionalism')}
                 value={reviewForm.professionalism}
                 onChange={(val) => setReviewForm({ ...reviewForm, professionalism: val })}
               />
             </div>
 
             <Input
-              label="Review Title (Optional)"
+              label={t('reviews.reviewTitle')}
               type="text"
               value={reviewForm.title}
               onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })}
-              placeholder="Sum up your experience..."
+              placeholder={t('reviews.reviewTitlePlaceholder')}
             />
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Your Review
+                {t('reviews.yourReview')}
               </label>
               <textarea
                 value={reviewForm.comment}
                 onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                 rows={6}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                placeholder="Share your experience working with this professional..."
+                placeholder={t('reviews.reviewPlaceholder')}
                 required
               />
             </div>
@@ -374,7 +376,7 @@ export function ReviewList({
                 className="w-4 h-4 text-blue-600 rounded"
               />
               <label htmlFor="wouldRecommend" className="text-sm text-gray-700">
-                I would recommend this professional to others
+                {t('reviews.wouldRecommendLabel')}
               </label>
             </div>
 
@@ -386,10 +388,10 @@ export function ReviewList({
                 className="flex-1"
                 disabled={submitting}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button type="submit" className="flex-1" disabled={submitting}>
-                {submitting ? 'Submitting...' : 'Submit Review'}
+                {submitting ? t('reviews.submitting') : t('reviews.submitReview')}
               </Button>
             </div>
           </form>

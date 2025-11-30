@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Clock, DollarSign, TrendingUp, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/context/LanguageContext';
 import { projectsApi } from '@/lib/api/projects';
 import { proposalsApi } from '@/lib/api/proposals';
 import { messagesApi } from '@/lib/api/messages';
@@ -15,6 +16,7 @@ import { Modal } from '@/components/ui/Modal';
 import type { Project } from '@/types';
 
 export default function JobBoardPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -134,10 +136,10 @@ export default function JobBoardPage() {
         const openProjects = response.projects.filter(p => p.status === 'new');
         setProjects(openProjects);
       } else {
-        setError('Error loading job postings');
+        setError(t('jobs.errorLoading'));
       }
     } catch (err: any) {
-      setError(err.message || 'Error loading job postings');
+      setError(err.message || t('jobs.errorLoading'));
     } finally {
       setLoading(false);
     }
@@ -201,12 +203,12 @@ export default function JobBoardPage() {
         setProposalText('');
         setProposalBudget('');
         setSelectedProject(null);
-        alert('Proposal submitted successfully!');
+        alert(t('success.proposalSubmitted'));
         loadProjects();
         loadProposalStats();
       }
     } catch (err: any) {
-      alert(err.message || 'Error submitting proposal');
+      alert(err.message || t('errors.submitProposal'));
     } finally {
       setSubmitting(false);
     }
@@ -228,7 +230,7 @@ export default function JobBoardPage() {
       }
     } catch (error: any) {
       console.error('Error creating conversation:', error);
-      alert('Error starting conversation. Please try again.');
+      alert(t('errors.startConversation'));
     }
   };
 
@@ -247,10 +249,10 @@ export default function JobBoardPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Available Jobs
+            {t('jobs.title')}
           </h1>
           <p className="text-gray-600">
-            Browse client projects and submit proposals
+            {t('jobs.subtitle')}
           </p>
         </div>
 
@@ -259,25 +261,25 @@ export default function JobBoardPage() {
           <Card>
             <div className="text-center">
               <p className="text-3xl font-bold text-blue-600">{projects.length}</p>
-              <p className="text-sm text-gray-600 mt-1">Available Jobs</p>
+              <p className="text-sm text-gray-600 mt-1">{t('jobs.stats.available')}</p>
             </div>
           </Card>
           <Card>
             <div className="text-center">
               <p className="text-3xl font-bold text-green-600">{proposalStats.sent}</p>
-              <p className="text-sm text-gray-600 mt-1">Proposals Sent</p>
+              <p className="text-sm text-gray-600 mt-1">{t('jobs.stats.proposalsSent')}</p>
             </div>
           </Card>
           <Card>
             <div className="text-center">
               <p className="text-3xl font-bold text-purple-600">{proposalStats.active}</p>
-              <p className="text-sm text-gray-600 mt-1">Active Bids</p>
+              <p className="text-sm text-gray-600 mt-1">{t('jobs.stats.activeBids')}</p>
             </div>
           </Card>
           <Card>
             <div className="text-center">
               <p className="text-3xl font-bold text-orange-600">{proposalStats.won}</p>
-              <p className="text-sm text-gray-600 mt-1">Won This Month</p>
+              <p className="text-sm text-gray-600 mt-1">{t('jobs.stats.wonThisMonth')}</p>
             </div>
           </Card>
         </div>
@@ -287,28 +289,28 @@ export default function JobBoardPage() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Trade Type
+                {t('jobs.filters.tradeType')}
               </label>
               <select
                 value={filters.tradeType}
                 onChange={(e) => setFilters({ ...filters, tradeType: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
               >
-                <option value="">All Trades</option>
-                <option value="Electrician">Electrician</option>
-                <option value="Plumber">Plumber</option>
-                <option value="HVAC">HVAC</option>
-                <option value="Carpenter">Carpenter</option>
-                <option value="Painter">Painter</option>
-                <option value="Mason">Mason</option>
-                <option value="Roofer">Roofer</option>
-                <option value="General Contractor">General Contractor</option>
+                <option value="">{t('jobs.filters.allTrades')}</option>
+                <option value="Electrician">{t('common.trades.electrician')}</option>
+                <option value="Plumber">{t('common.trades.plumber')}</option>
+                <option value="HVAC">{t('common.trades.hvac')}</option>
+                <option value="Carpenter">{t('common.trades.carpenter')}</option>
+                <option value="Painter">{t('common.trades.painter')}</option>
+                <option value="Mason">{t('common.trades.mason')}</option>
+                <option value="Roofer">{t('common.trades.roofer')}</option>
+                <option value="General Contractor">{t('common.trades.generalContractor')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Min Budget ($)
+                {t('jobs.filters.minBudget')}
               </label>
               <input
                 type="number"
@@ -321,7 +323,7 @@ export default function JobBoardPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Max Budget ($)
+                {t('jobs.filters.maxBudget')}
               </label>
               <input
                 type="number"
@@ -334,42 +336,42 @@ export default function JobBoardPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Location
+                {t('jobs.filters.location')}
               </label>
               <input
                 type="text"
                 value={filters.location}
                 onChange={(e) => setFilters({ ...filters, location: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                placeholder="City or State"
+                placeholder={t('jobs.filters.locationPlaceholder')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Sort By
+                {t('jobs.filters.sortBy')}
               </label>
               <select
                 value={filters.sortBy}
                 onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
               >
-                <option value="newest">Newest First</option>
-                <option value="bestMatch">Best Match</option>
-                <option value="budget">Highest Budget</option>
+                <option value="newest">{t('jobs.filters.newestFirst')}</option>
+                <option value="bestMatch">{t('jobs.filters.bestMatch')}</option>
+                <option value="budget">{t('jobs.filters.highestBudget')}</option>
               </select>
             </div>
           </div>
 
           <div className="flex gap-2">
             <Button onClick={applyFilters} size="sm">
-              Apply Filters
+              {t('jobs.filters.apply')}
             </Button>
             <Button onClick={handleClearFilters} variant="ghost" size="sm">
-              Clear All
+              {t('jobs.filters.clearAll')}
             </Button>
             <div className="ml-auto text-sm text-gray-600 flex items-center">
-              Showing {filteredProjects.length} of {projects.length} jobs
+              {t('jobs.showing')} {filteredProjects.length} {t('common.of')} {projects.length} {t('jobs.jobs')}
             </div>
           </div>
         </Card>
@@ -388,11 +390,11 @@ export default function JobBoardPage() {
             <div className="text-center py-12">
               <p className="text-gray-600 text-lg mb-4">
                 {projects.length === 0 
-                  ? 'No job postings available at the moment'
-                  : 'No jobs match your filters'}
+                  ? t('jobs.noJobsAvailable')
+                  : t('jobs.noJobsMatch')}
               </p>
               <Button onClick={projects.length === 0 ? loadProjects : handleClearFilters}>
-                {projects.length === 0 ? 'Refresh' : 'Clear Filters'}
+                {projects.length === 0 ? t('common.refresh') : t('jobs.filters.clearAll')}
               </Button>
             </div>
           </Card>
@@ -426,7 +428,7 @@ export default function JobBoardPage() {
                   </div>
                   
                   <div className="mb-3">
-                    <p className="text-sm text-gray-600 mb-1">Budget</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('jobs.budget')}</p>
                     <p className="text-2xl font-bold text-green-600">
                       ${project.budget.min}-${project.budget.max}
                     </p>
@@ -444,21 +446,21 @@ export default function JobBoardPage() {
                     
                     <div className="flex items-center gap-2 text-gray-600">
                       <Calendar className="w-4 h-4" />
-                      <span>Posted {new Date(project.createdAt).toLocaleDateString()}</span>
+                      <span>{t('jobs.posted')} {new Date(project.createdAt).toLocaleDateString()}</span>
                     </div>
                     
                     <div className="flex items-center gap-2 text-gray-600">
                       <Clock className="w-4 h-4" />
                       <span>
                         {project.timeline?.deadline 
-                          ? `Due ${new Date(project.timeline.deadline).toLocaleDateString()}` 
-                          : 'Flexible timeline'}
+                          ? `${t('jobs.due')} ${new Date(project.timeline.deadline).toLocaleDateString()}` 
+                          : t('jobs.flexibleTimeline')}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 text-gray-600">
                       <DollarSign className="w-4 h-4" />
-                      <span>{(project as any).proposalCount || 0} proposals</span>
+                      <span>{(project as any).proposalCount || 0} {t('jobs.proposals')}</span>
                     </div>
                   </div>
 
@@ -478,7 +480,7 @@ export default function JobBoardPage() {
                     onClick={() => openProposalModal(project)}
                     className="w-full"
                   >
-                    Submit Proposal
+                    {t('jobs.submitProposal')}
                   </Button>
                   <Button
                     onClick={() => handleContactClient(project)}
@@ -486,7 +488,7 @@ export default function JobBoardPage() {
                     className="w-full"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
-                    Contact Client
+                    {t('jobs.contactClient')}
                   </Button>
                 </div>
               </Card>
@@ -505,19 +507,19 @@ export default function JobBoardPage() {
             setProposalText('');
             setProposalBudget('');
           }}
-          title={`Submit Proposal: ${selectedProject.title}`}
+          title={`${t('jobs.submitProposal')}: ${selectedProject.title}`}
         >
           <form onSubmit={handleSubmitProposal} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Your Proposed Budget ($)
+                {t('jobs.proposedBudget')}
               </label>
               <input
                 type="number"
                 value={proposalBudget}
                 onChange={(e) => setProposalBudget(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                placeholder={`Between $${selectedProject.budget.min} - $${selectedProject.budget.max}`}
+                placeholder={`${t('jobs.between')} $${selectedProject.budget.min} - $${selectedProject.budget.max}`}
                 min={selectedProject.budget.min}
                 max={selectedProject.budget.max}
                 required
@@ -527,14 +529,14 @@ export default function JobBoardPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Cover Letter / Proposal
+                {t('jobs.coverLetter')}
               </label>
               <textarea
                 value={proposalText}
                 onChange={(e) => setProposalText(e.target.value)}
                 rows={6}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                placeholder="Explain why you're the best fit for this job..."
+                placeholder={t('jobs.coverLetterPlaceholder')}
                 required
                 disabled={submitting}
               />
@@ -546,7 +548,7 @@ export default function JobBoardPage() {
                 disabled={submitting}
                 className="flex-1"
               >
-                {submitting ? <Spinner size="sm" /> : 'Submit Proposal'}
+                {submitting ? <Spinner size="sm" /> : t('jobs.submitProposal')}
               </Button>
               <Button
                 type="button"
@@ -557,7 +559,7 @@ export default function JobBoardPage() {
                 }}
                 disabled={submitting}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </div>
           </form>
